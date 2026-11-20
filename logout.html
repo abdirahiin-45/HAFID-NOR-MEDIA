@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="so" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Logout | HAFID NOR MEDIA</title>
+  <meta name="description" content="Waxaad ka baxday akoonkaaga HAFID NOR MEDIA.">
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="logout-page">
+
+  <main class="logout-wrapper">
+
+    <section class="logout-card">
+
+      <a href="index.html" class="logout-logo">
+        <span class="logout-logo-icon">
+          <i class="fas fa-newspaper"></i>
+        </span>
+        HAFID NOR <strong>MEDIA</strong>
+      </a>
+
+      <div class="logout-success-icon">
+        <i class="fas fa-check"></i>
+      </div>
+
+      <span class="logout-tag">LOGOUT SUCCESSFUL</span>
+
+      <h1>Waad ka baxday akoonkaaga!</h1>
+
+      <p>
+        Waad ku mahadsan tahay isticmaalka HAFID NOR MEDIA.
+        Waxaan rajaynaynaa inaan mar kale ku aragno.
+      </p>
+
+      <div class="logout-buttons">
+
+        <a href="login.html" class="logout-login-btn">
+          <i class="fas fa-sign-in-alt"></i>
+          Mar kale soo gal
+        </a>
+
+        <a href="index.html" class="logout-home-btn">
+          <i class="fas fa-home"></i>
+          Ku noqo bogga hore
+        </a>
+
+      </div>
+
+      <div class="logout-security">
+        <i class="fas fa-shield-halved"></i>
+        Akoonkaaga si ammaan ah ayaad uga baxday.
+      </div>
+
+    </section>
+
+    <footer class="logout-footer">
+      © <span id="logoutYear"></span> HAFID NOR MEDIA.
+      Dhammaan xuquuqdu way dhowran tahay.
+    </footer>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+
+  <script>
+    document.getElementById("logoutYear").textContent =
+      new Date().getFullYear();
+  </script>
+
+</body>
+</html>

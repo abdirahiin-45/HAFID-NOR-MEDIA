@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="so" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login | HAFID NOR MEDIA</title>
+  <meta name="description" content="Gal akoonkaaga HAFID NOR MEDIA.">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body class="login-page">
+
+  <main class="login-wrapper">
+
+    <section class="login-card">
+
+      <a href="index.html" class="login-logo">
+        <span class="login-logo-icon">
+          <i class="fas fa-newspaper"></i>
+        </span>
+        <span>HAFID NOR <strong>MEDIA</strong></span>
+      </a>
+
+      <div class="login-heading">
+        <span class="login-tag">KU SOO DHAWOOW</span>
+        <h1>Ku soo dhawoow!</h1>
+        <p>Gal akoonkaaga si aad u isticmaasho adeegyada HAFID NOR MEDIA.</p>
+      </div>
+
+      <form id="loginForm">
+
+        <div class="login-field">
+          <label for="loginEmail">Email-kaaga</label>
+          <div class="login-input">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="example@email.com"
+              autocomplete="email"
+              required>
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label for="loginPassword">Furaha sirta ah</label>
+
+          <div class="login-input">
+            <i class="fas fa-lock"></i>
+
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Geli password-kaaga"
+              autocomplete="current-password"
+              required>
+
+            <button
+              type="button"
+              class="password-toggle"
+              id="togglePassword"
+              aria-label="Muuji password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-options">
+
+          <label class="remember-option">
+            <input type="checkbox" id="rememberMe">
+            <span>I xasuuso</span>
+          </label>
+
+          <a href="#" id="forgotPasswordBtn">
+            Ma illowday password-ka?
+          </a>
+
+        </div>
+
+        <button type="submit" class="login-submit" id="loginSubmit">
+          <span>Soo gal</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <p id="loginMessage" class="form-message" role="status"></p>
+
+      </form>
+
+      <div class="login-divider">
+        <span>AMA</span>
+      </div>
+
+      <div class="login-register">
+        Akoon ma lihid?
+        <a href="register.html">Sameyso akoon cusub</a>
+      </div>
+
+      <a href="index.html" class="back-home">
+        <i class="fas fa-arrow-left"></i>
+        Ku noqo bogga hore
+      </a>
+
+      <div class="login-security">
+        <i class="fas fa-shield-halved"></i>
+        <span>Macluumaadkaaga si ammaan ah ayaa loo ilaaliyaa.</span>
+      </div>
+
+    </section>
+
+    <footer class="login-footer">
+      © <span id="loginYear"></span> HAFID NOR MEDIA.
+      Dhammaan xuquuqdu way dhowran tahay.
+    </footer>
+
+  </main>
+
+  <!-- Supabase waa inuu ka horreeyaa script.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const togglePassword =
+        document.getElementById("togglePassword");
+
+      const passwordInput =
+        document.getElementById("loginPassword");
+
+      const loginYear =
+        document.getElementById("loginYear");
+
+      if (togglePassword && passwordInput) {
+        togglePassword.addEventListener("click", function () {
+
+          const isPassword =
+            passwordInput.type === "password";
+
+          passwordInput.type =
+            isPassword ? "text" : "password";
+
+          togglePassword.innerHTML = isPassword
+            ? '<i class="fas fa-eye-slash"></i>'
+            : '<i class="fas fa-eye"></i>';
+
+        });
+      }
+
+      if (loginYear) {
+        loginYear.textContent = new Date().getFullYear();
+      }
+
+    });
+  </script>
+
+</body>
+</html>
