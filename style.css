@@ -2020,6 +2020,10 @@ textarea {
     display: none;
   }
 
+  .language-selector {
+  display: flex !important;
+}
+
 
   /* HEADER */
 
