@@ -16,23 +16,30 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
 
-<!-- TOP BAR -->
+<!-- =========================================
+     TOP BAR
+========================================= -->
 <div class="top-bar">
   <div class="container top-bar-content">
+
     <div class="top-left">
       <span>
         <i class="fa-regular fa-calendar"></i>
         <span id="currentDate" data-i18n="latestDate">Wararkii ugu dambeeyay</span>
       </span>
+
       <span>
         <i class="fa-solid fa-location-dot"></i>
         <span data-i18n="location">Muqdisho, Soomaaliya</span>
@@ -45,10 +52,14 @@
       <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
       <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
     </div>
+
   </div>
 </div>
 
-<!-- HEADER -->
+
+<!-- =========================================
+     HEADER
+========================================= -->
 <header class="main-header">
   <div class="container header-content">
 
@@ -56,6 +67,7 @@
       <div class="logo-icon">
         <i class="fa-solid fa-newspaper"></i>
       </div>
+
       <div class="logo-text">
         <h1>HAFID NOR <span>MEDIA</span></h1>
         <p data-i18n="tagline">XOG • XAQIIQO • WARAR</p>
@@ -67,6 +79,7 @@
       <!-- LANGUAGE -->
       <div class="language-selector">
         <i class="fa-solid fa-globe"></i>
+
         <select id="languageSelect" aria-label="Choose language">
           <option value="so">Somali</option>
           <option value="en">English</option>
@@ -76,12 +89,20 @@
 
       <!-- COLOR CUSTOMIZER -->
       <div class="theme-customizer">
-        <button id="colorPickerBtn" class="color-picker-btn" type="button" aria-expanded="false" aria-controls="colorPanel">
+
+        <button
+          id="colorPickerBtn"
+          class="color-picker-btn"
+          type="button"
+          aria-expanded="false"
+          aria-controls="colorPanel">
+
           <i class="fa-solid fa-palette"></i>
           <span data-i18n="colors">Colors</span>
         </button>
 
         <div class="color-panel" id="colorPanel">
+
           <h3 data-i18n="customize">Customize Website</h3>
           <p data-i18n="chooseColor">Dooro midabka website-ka</p>
 
@@ -94,18 +115,50 @@
           <h4 data-i18n="colorThemes">Color Themes</h4>
 
           <div class="color-presets">
-            <button class="preset" type="button" data-primary="#102b46" data-accent="#f47b35" style="--swatch:#102b46" aria-label="Navy orange"></button>
-            <button class="preset" type="button" data-primary="#075e54" data-accent="#22c55e" style="--swatch:#075e54" aria-label="Green"></button>
-            <button class="preset" type="button" data-primary="#172554" data-accent="#3b82f6" style="--swatch:#172554" aria-label="Blue"></button>
-            <button class="preset" type="button" data-primary="#581c87" data-accent="#c084fc" style="--swatch:#581c87" aria-label="Purple"></button>
-            <button class="preset" type="button" data-primary="#7f1d1d" data-accent="#ef4444" style="--swatch:#7f1d1d" aria-label="Red"></button>
-            <button class="preset" type="button" data-primary="#292524" data-accent="#d6a84b" style="--swatch:#292524" aria-label="Black gold"></button>
+
+            <button class="preset" type="button"
+              data-primary="#102b46"
+              data-accent="#f47b35"
+              style="--swatch:#102b46"
+              aria-label="Navy orange"></button>
+
+            <button class="preset" type="button"
+              data-primary="#075e54"
+              data-accent="#22c55e"
+              style="--swatch:#075e54"
+              aria-label="Green"></button>
+
+            <button class="preset" type="button"
+              data-primary="#172554"
+              data-accent="#3b82f6"
+              style="--swatch:#172554"
+              aria-label="Blue"></button>
+
+            <button class="preset" type="button"
+              data-primary="#581c87"
+              data-accent="#c084fc"
+              style="--swatch:#581c87"
+              aria-label="Purple"></button>
+
+            <button class="preset" type="button"
+              data-primary="#7f1d1d"
+              data-accent="#ef4444"
+              style="--swatch:#7f1d1d"
+              aria-label="Red"></button>
+
+            <button class="preset" type="button"
+              data-primary="#292524"
+              data-accent="#d6a84b"
+              style="--swatch:#292524"
+              aria-label="Black gold"></button>
+
           </div>
 
           <button id="resetColors" class="reset-colors" type="button">
             <i class="fa-solid fa-rotate-left"></i>
             <span data-i18n="resetColors">Reset Colors</span>
           </button>
+
         </div>
       </div>
 
@@ -126,7 +179,14 @@
       </button>
 
       <!-- MOBILE MENU -->
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mainNav">
+
         <i class="fa-solid fa-bars"></i>
       </button>
 
@@ -134,21 +194,40 @@
   </div>
 </header>
 
-<!-- SEARCH BOX -->
+
+<!-- =========================================
+     SEARCH BOX
+========================================= -->
 <div class="search-box" id="searchBox">
   <div class="container search-content">
-    <input type="search" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Raadi wararka aad rabto..." aria-label="Search news">
+
+    <input
+      type="search"
+      id="searchInput"
+      data-i18n-placeholder="searchPlaceholder"
+      placeholder="Raadi wararka aad rabto..."
+      aria-label="Search news">
+
     <button id="searchSubmit" type="button">
       <i class="fa-solid fa-magnifying-glass"></i>
       <span data-i18n="search">Raadi</span>
     </button>
+
   </div>
 </div>
 
-<!-- NAVIGATION -->
+
+<!-- =========================================
+     NAVIGATION
+========================================= -->
 <nav class="main-nav" id="mainNav" aria-label="Main navigation">
   <div class="container nav-content">
-    <a href="#home" class="active"><i class="fa-solid fa-house"></i> <span data-i18n="home">Home</span></a>
+
+    <a href="#home" class="active">
+      <i class="fa-solid fa-house"></i>
+      <span data-i18n="home">Home</span>
+    </a>
+
     <a href="#somalia" data-i18n="somalia">Soomaaliya</a>
     <a href="#world" data-i18n="world">Caalamka</a>
     <a href="#politics" data-i18n="politics">Siyaasadda</a>
@@ -157,52 +236,97 @@
     <a href="#technology" data-i18n="technology">Tiknoolajiyadda</a>
     <a href="#videos" data-i18n="videos">Muuqaallo</a>
     <a href="#about" data-i18n="about">Nagu Saabsan</a>
+
   </div>
 </nav>
 
-<!-- BREAKING NEWS -->
+
+<!-- =========================================
+     BREAKING NEWS
+========================================= -->
 <section class="breaking-news">
   <div class="container breaking-content">
+
     <div class="breaking-label">
       <i class="fa-solid fa-bolt"></i>
       <span data-i18n="breaking">WAR DEGDEG AH</span>
     </div>
+
     <div class="breaking-text">
       <div class="breaking-marquee" data-i18n="breakingText">
         Ku soo dhawoow HAFID NOR MEDIA — Wararkii ugu dambeeyay ee Soomaaliya iyo Caalamka.
       </div>
     </div>
+
   </div>
 </section>
 
-<!-- MAIN CONTENT -->
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
 <main id="home">
 
   <!-- HERO -->
   <section class="hero-section">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="topStories">Wararka Ugu Muhiimsan</span></h2>
-        <a href="#latest"><span data-i18n="allNews">Dhammaan Wararka</span> <i class="fa-solid fa-arrow-right"></i></a>
+        <h2>
+          <span></span>
+          <span data-i18n="topStories">Wararka Ugu Muhiimsan</span>
+        </h2>
+
+        <a href="#latest">
+          <span data-i18n="allNews">Dhammaan Wararka</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
 
       <div class="hero-grid">
+
         <article class="hero-main news-card">
+
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1200" alt="Wararka siyaasadda" loading="eager">
+            <img
+              src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1200"
+              alt="Wararka siyaasadda"
+              loading="eager">
+
             <span class="category-badge" data-i18n="politics">SIYAASADDA</span>
           </div>
+
           <div class="news-info">
-            <span class="news-date"><i class="fa-regular fa-clock"></i> <span data-i18n="featuredNews">Wararka ugu waaweyn</span></span>
-            <h2 data-i18n="heroTitle">HAFID NOR MEDIA: Ku soo dhawoow warbaahinta xogta iyo xaqiiqada</h2>
-            <p data-i18n="heroDescription">Halkaan kala soco wararka Soomaaliya, Geeska Afrika iyo dhacdooyinka caalamka.</p>
-            <a href="#about" class="read-more"><span data-i18n="readNews">Akhri Warka</span> <i class="fa-solid fa-arrow-right"></i></a>
+
+            <span class="news-date">
+              <i class="fa-regular fa-clock"></i>
+              <span data-i18n="featuredNews">Wararka ugu waaweyn</span>
+            </span>
+
+            <h2 data-i18n="heroTitle">
+              HAFID NOR MEDIA: Ku soo dhawoow warbaahinta xogta iyo xaqiiqada
+            </h2>
+
+            <p data-i18n="heroDescription">
+              Halkaan kala soco wararka Soomaaliya, Geeska Afrika iyo dhacdooyinka caalamka.
+            </p>
+
+            <a href="#about" class="read-more">
+              <span data-i18n="readNews">Akhri Warka</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
           </div>
         </article>
 
         <div class="hero-side">
+
           <article class="side-news news-card">
-            <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?w=600" alt="Wararka caalamka" loading="lazy">
+            <img
+              src="https://images.unsplash.com/photo-1495020689067-958852a7765e?w=600"
+              alt="Wararka caalamka"
+              loading="lazy">
+
             <div class="side-news-info">
               <span class="category-small" data-i18n="world">CAALAMKA</span>
               <h3 data-i18n="sideWorld">Wararkii ugu dambeeyay ee caalamka</h3>
@@ -211,7 +335,11 @@
           </article>
 
           <article class="side-news news-card">
-            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600" alt="Dhaqaalaha" loading="lazy">
+            <img
+              src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600"
+              alt="Dhaqaalaha"
+              loading="lazy">
+
             <div class="side-news-info">
               <span class="category-small" data-i18n="business">DHAQAALAHA</span>
               <h3 data-i18n="sideBusiness">Wararka dhaqaalaha iyo ganacsiga</h3>
@@ -220,32 +348,46 @@
           </article>
 
           <article class="side-news news-card">
-            <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600" alt="Ciyaaraha" loading="lazy">
+            <img
+              src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=600"
+              alt="Ciyaaraha"
+              loading="lazy">
+
             <div class="side-news-info">
               <span class="category-small" data-i18n="sports">CIYAARAHA</span>
               <h3 data-i18n="sideSports">Wararka ciyaaraha iyo tartamada</h3>
               <span class="news-date">Sports News</span>
             </div>
           </article>
+
         </div>
       </div>
     </div>
   </section>
 
+
   <!-- LATEST NEWS -->
   <section class="latest-section" id="latest">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="latestNews">Wararkii Ugu Dambeeyay</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="latestNews">Wararkii Ugu Dambeeyay</span>
+        </h2>
+
         <a href="#latest" data-i18n="seeAll">Arag Dhammaan →</a>
       </div>
 
       <div class="news-grid">
+
         <article class="news-card">
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600" alt="Wararka Soomaaliya" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600"
+              alt="Wararka Soomaaliya" loading="lazy">
             <span class="category-badge" data-i18n="somalia">SOOMAALIYA</span>
           </div>
+
           <div class="news-info">
             <span class="news-date" data-i18n="somaliaNews">Wararka Soomaaliya</span>
             <h3 data-i18n="latestSomalia">Wararkii ugu dambeeyay ee dalka Soomaaliya</h3>
@@ -256,9 +398,11 @@
 
         <article class="news-card">
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=600" alt="Caalamka" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=600"
+              alt="Caalamka" loading="lazy">
             <span class="category-badge" data-i18n="world">CAALAMKA</span>
           </div>
+
           <div class="news-info">
             <span class="news-date" data-i18n="worldNews">Wararka Caalamka</span>
             <h3 data-i18n="latestWorld">Dhacdooyinka ugu waaweyn ee caalamka</h3>
@@ -269,9 +413,11 @@
 
         <article class="news-card">
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600" alt="Ganacsiga" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600"
+              alt="Ganacsiga" loading="lazy">
             <span class="category-badge" data-i18n="business">GANACSIGA</span>
           </div>
+
           <div class="news-info">
             <span class="news-date" data-i18n="economy">Dhaqaalaha</span>
             <h3 data-i18n="latestBusiness">Ganacsiga iyo dhaqaalaha Soomaaliya</h3>
@@ -282,9 +428,11 @@
 
         <article class="news-card">
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600" alt="Technology" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600"
+              alt="Technology" loading="lazy">
             <span class="category-badge" data-i18n="technology">TECHNOLOGY</span>
           </div>
+
           <div class="news-info">
             <span class="news-date" data-i18n="technology">Tiknoolajiyadda</span>
             <h3 data-i18n="latestTechnology">Horumarka tiknoolajiyadda iyo internetka</h3>
@@ -295,9 +443,11 @@
 
         <article class="news-card">
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600" alt="Football" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600"
+              alt="Football" loading="lazy">
             <span class="category-badge" data-i18n="sports">CIYAARAHA</span>
           </div>
+
           <div class="news-info">
             <span class="news-date" data-i18n="sports">Sports News</span>
             <h3 data-i18n="latestSports">Wararka kubadda cagta iyo ciyaaraha</h3>
@@ -308,9 +458,11 @@
 
         <article class="news-card">
           <div class="news-image">
-            <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600" alt="Wareysiyo" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600"
+              alt="Wareysiyo" loading="lazy">
             <span class="category-badge" data-i18n="interviews">WAREYSIYO</span>
           </div>
+
           <div class="news-info">
             <span class="news-date" data-i18n="interviews">Wareysiyo</span>
             <h3 data-i18n="latestInterviews">Wareysiyo iyo aragtiyo kala duwan</h3>
@@ -318,21 +470,31 @@
             <a href="#videos" class="read-more" data-i18n="readNews">Akhri Warka →</a>
           </div>
         </article>
+
       </div>
     </div>
   </section>
 
+
   <!-- SOMALIA -->
   <section class="category-section" id="somalia">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="somaliaSection">Wararka Soomaaliya</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="somaliaSection">Wararka Soomaaliya</span>
+        </h2>
+
         <a href="#somalia" data-i18n="seeAll">Dhammaan →</a>
       </div>
 
       <div class="category-layout">
+
         <div class="category-feature">
-          <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=1000" alt="Soomaaliya" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=1000"
+            alt="Soomaaliya" loading="lazy">
+
           <div class="feature-overlay">
             <span class="category-badge" data-i18n="somalia">SOOMAALIYA</span>
             <h2 data-i18n="somaliaFeature">Wararka iyo dhacdooyinka Soomaaliya</h2>
@@ -341,8 +503,11 @@
         </div>
 
         <div class="category-list">
+
           <article class="category-item">
-            <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=300" alt="Wararka gudaha" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=300"
+              alt="Wararka gudaha" loading="lazy">
+
             <div>
               <span data-i18n="somalia">SOOMAALIYA</span>
               <h3 data-i18n="somaliaItem1">Warbixinno cusub oo ku saabsan dalka</h3>
@@ -351,7 +516,9 @@
           </article>
 
           <article class="category-item">
-            <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300" alt="Waxbarashada" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300"
+              alt="Waxbarashada" loading="lazy">
+
             <div>
               <span data-i18n="education">WAXBARASHADA</span>
               <h3 data-i18n="somaliaItem2">Wararka waxbarashada iyo bulshada</h3>
@@ -360,23 +527,32 @@
           </article>
 
           <article class="category-item">
-            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=300" alt="Bulshada" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=300"
+              alt="Bulshada" loading="lazy">
+
             <div>
               <span data-i18n="community">BULSHADA</span>
               <h3 data-i18n="somaliaItem3">Arrimaha bulshada iyo horumarka</h3>
               <small data-i18n="localNews">Wararka gudaha</small>
             </div>
           </article>
+
         </div>
       </div>
     </div>
   </section>
 
+
   <!-- WORLD -->
   <section class="latest-section" id="world">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="worldSection">Wararka Caalamka</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="worldSection">Wararka Caalamka</span>
+        </h2>
+
         <a href="#world" data-i18n="seeAll">Dhammaan →</a>
       </div>
 
@@ -386,137 +562,234 @@
           <h2 data-i18n="worldBannerTitle">La soco dhacdooyinka caalamka</h2>
           <p data-i18n="worldBannerDescription">Warar, falanqayn iyo xog caalami ah.</p>
         </div>
+
         <i class="fa-solid fa-earth-africa"></i>
       </div>
+
     </div>
   </section>
+
 
   <!-- POLITICS -->
   <section class="category-section" id="politics">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="politicsSection">Siyaasadda</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="politicsSection">Siyaasadda</span>
+        </h2>
+
         <a href="#politics" data-i18n="seeAll">Dhammaan →</a>
       </div>
+
       <div class="simple-category">
-        <p data-i18n="politicsDescription">Halkaan waxaa lagu soo bandhigayaa wararka siyaasadda, go'aamada iyo falanqaynta.</p>
+        <p data-i18n="politicsDescription">
+          Halkaan waxaa lagu soo bandhigayaa wararka siyaasadda, go'aamada iyo falanqaynta.
+        </p>
       </div>
+
     </div>
   </section>
+
 
   <!-- BUSINESS -->
   <section class="latest-section" id="business">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="businessSection">Dhaqaalaha iyo Ganacsiga</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="businessSection">Dhaqaalaha iyo Ganacsiga</span>
+        </h2>
+
         <a href="#business" data-i18n="seeAll">Dhammaan →</a>
       </div>
+
       <div class="simple-category">
-        <p data-i18n="businessSectionDescription">Wararka dhaqaalaha, ganacsiga, suuqyada iyo maalgashiga.</p>
+        <p data-i18n="businessSectionDescription">
+          Wararka dhaqaalaha, ganacsiga, suuqyada iyo maalgashiga.
+        </p>
       </div>
+
     </div>
   </section>
+
 
   <!-- SPORTS -->
   <section class="category-section" id="sports">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="sportsSection">Ciyaaraha</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="sportsSection">Ciyaaraha</span>
+        </h2>
+
         <a href="#sports" data-i18n="seeAll">Dhammaan →</a>
       </div>
+
       <div class="simple-category">
-        <p data-i18n="sportsSectionDescription">Wararka kubadda cagta, ciyaaraha gudaha iyo kuwa caalamka.</p>
+        <p data-i18n="sportsSectionDescription">
+          Wararka kubadda cagta, ciyaaraha gudaha iyo kuwa caalamka.
+        </p>
       </div>
+
     </div>
   </section>
+
 
   <!-- TECHNOLOGY -->
   <section class="latest-section" id="technology">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="technologySection">Tiknoolajiyadda</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="technologySection">Tiknoolajiyadda</span>
+        </h2>
+
         <a href="#technology" data-i18n="seeAll">Dhammaan →</a>
       </div>
+
       <div class="simple-category">
-        <p data-i18n="technologySectionDescription">Wararka tiknoolajiyadda, AI, internetka iyo hal-abuurka.</p>
+        <p data-i18n="technologySectionDescription">
+          Wararka tiknoolajiyadda, AI, internetka iyo hal-abuurka.
+        </p>
       </div>
+
     </div>
   </section>
+
 
   <!-- VIDEOS -->
   <section class="videos-section" id="videos">
     <div class="container">
+
       <div class="section-heading">
-        <h2><span></span><span data-i18n="videoSection">Muuqaallo iyo Barnaamijyo</span></h2>
+        <h2>
+          <span></span>
+          <span data-i18n="videoSection">Muuqaallo iyo Barnaamijyo</span>
+        </h2>
+
         <a href="#" data-i18n="youtubeChannel">YouTube Channel →</a>
       </div>
 
       <div class="video-grid">
+
         <article class="video-card">
           <div class="video-placeholder">
-            <img src="https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=600" alt="Barnaamij" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=600"
+              alt="Barnaamij" loading="lazy">
             <i class="fa-solid fa-play"></i>
           </div>
+
           <h3 data-i18n="video1">Barnaamijyada gaarka ah ee HAFID NOR MEDIA</h3>
         </article>
 
         <article class="video-card">
           <div class="video-placeholder">
-            <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=600" alt="Wareysi" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=600"
+              alt="Wareysi" loading="lazy">
             <i class="fa-solid fa-play"></i>
           </div>
+
           <h3 data-i18n="video2">Wareysiyo iyo falanqayn</h3>
         </article>
 
         <article class="video-card">
           <div class="video-placeholder">
-            <img src="https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=600" alt="Warbixin" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1503428593586-e225b39bddfe?w=600"
+              alt="Warbixin" loading="lazy">
             <i class="fa-solid fa-play"></i>
           </div>
+
           <h3 data-i18n="video3">Warbixinnada muuqaalka ah</h3>
         </article>
+
       </div>
     </div>
   </section>
+
 
   <!-- ABOUT -->
   <section class="about-section" id="about">
     <div class="container about-content">
+
       <div>
         <span class="about-label" data-i18n="about">NAGU SAABSAN</span>
+
         <h2>HAFID NOR MEDIA</h2>
-        <p data-i18n="aboutParagraph1">HAFID NOR MEDIA waa madal warbaahineed loogu talagalay baahinta wararka, xogta, xaqiiqooyinka iyo falanqaynta Soomaaliya iyo caalamka.</p>
-        <p data-i18n="aboutParagraph2">Ujeeddadeennu waa in akhristayaasha la gaarsiiyo warar la hubiyey iyo xog waxtar leh.</p>
-        <a href="mailto:contact@example.com" class="read-more" data-i18n="contactUs">Nala Soo Xiriir →</a>
+
+        <p data-i18n="aboutParagraph1">
+          HAFID NOR MEDIA waa madal warbaahineed loogu talagalay baahinta wararka, xogta, xaqiiqooyinka iyo falanqaynta Soomaaliya iyo caalamka.
+        </p>
+
+        <p data-i18n="aboutParagraph2">
+          Ujeeddadeennu waa in akhristayaasha la gaarsiiyo warar la hubiyey iyo xog waxtar leh.
+        </p>
+
+        <a href="mailto:contact@example.com" class="read-more" data-i18n="contactUs">
+          Nala Soo Xiriir →
+        </a>
       </div>
+
       <div class="about-icon">
         <i class="fa-solid fa-tower-broadcast"></i>
       </div>
+
     </div>
   </section>
+
 
   <!-- NEWSLETTER -->
   <section class="newsletter-section">
     <div class="container newsletter-content">
+
       <div>
         <h2 data-i18n="newsletterTitle">Hel Wararkii Ugu Dambeeyay</h2>
-        <p data-i18n="newsletterDescription">La soco wararka cusub ee HAFID NOR MEDIA.</p>
+        <p data-i18n="newsletterDescription">
+          La soco wararka cusub ee HAFID NOR MEDIA.
+        </p>
       </div>
 
       <form id="newsletterForm">
-        <input type="email" id="newsletterEmail" data-i18n-placeholder="emailPlaceholder" placeholder="Geli email-kaaga" autocomplete="email" required>
-        <button type="submit" data-i18n="subscribe">Isdiiwaangeli</button>
+        <input
+          type="email"
+          id="newsletterEmail"
+          data-i18n-placeholder="emailPlaceholder"
+          placeholder="Geli email-kaaga"
+          autocomplete="email"
+          required>
+
+        <button type="submit" data-i18n="subscribe">
+          Isdiiwaangeli
+        </button>
       </form>
+
     </div>
   </section>
 
 </main>
 
-<!-- ACCOUNT MODAL -->
-<div class="auth-modal" id="authModal" aria-hidden="true">
-  <div class="auth-container" role="dialog" aria-modal="true" aria-labelledby="authTitle">
 
-    <button type="button" class="auth-close" id="closeAuthModal" aria-label="Close">
+<!-- =========================================
+     ACCOUNT MODAL
+========================================= -->
+<div class="auth-modal" id="authModal" aria-hidden="true">
+
+  <div
+    class="auth-container"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="authTitle">
+
+    <button
+      type="button"
+      class="auth-close"
+      id="closeAuthModal"
+      aria-label="Close">
+
       <i class="fa-solid fa-xmark"></i>
     </button>
 
@@ -526,46 +799,88 @@
       <p>Ku soo dhawoow xubinnimada warbaahinta</p>
     </div>
 
+
     <!-- LOGIN FORM -->
     <form id="loginForm">
+
       <h3>Gal Akoonkaaga</h3>
 
       <label for="loginEmail">Email-kaaga</label>
-      <input type="email" id="loginEmail" placeholder="example@email.com" autocomplete="email" required>
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="example@email.com"
+        autocomplete="email"
+        required>
 
       <label for="loginPassword">Password</label>
-      <input type="password" id="loginPassword" placeholder="Geli password-kaaga" autocomplete="current-password" required>
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Geli password-kaaga"
+        autocomplete="current-password"
+        required>
 
       <button type="submit" class="auth-submit">
         <i class="fa-solid fa-right-to-bracket"></i>
         Login
       </button>
 
-      <button type="button" id="forgotPasswordBtn" class="text-button">Ma illowday password-ka?</button>
+      <button type="button" id="forgotPasswordBtn" class="text-button">
+        Ma illowday password-ka?
+      </button>
 
       <p>
         Ma lihid account?
-        <button type="button" id="showRegisterBtn" class="text-button">Isdiiwaangeli</button>
+        <button type="button" id="showRegisterBtn" class="text-button">
+          Isdiiwaangeli
+        </button>
       </p>
 
       <p id="loginMessage" class="form-message" aria-live="polite"></p>
+
     </form>
+
 
     <!-- REGISTER FORM -->
     <form id="registerForm" hidden>
+
       <h3>Sameyso Account Cusub</h3>
 
       <label for="registerName">Magaca oo buuxa</label>
-      <input type="text" id="registerName" placeholder="Magacaaga" autocomplete="name" minlength="3" required>
+      <input
+        type="text"
+        id="registerName"
+        placeholder="Magacaaga"
+        autocomplete="name"
+        minlength="3"
+        required>
 
       <label for="registerEmail">Email</label>
-      <input type="email" id="registerEmail" placeholder="example@email.com" autocomplete="email" required>
+      <input
+        type="email"
+        id="registerEmail"
+        placeholder="example@email.com"
+        autocomplete="email"
+        required>
 
       <label for="registerPassword">Password</label>
-      <input type="password" id="registerPassword" placeholder="Sameyso password" minlength="8" autocomplete="new-password" required>
+      <input
+        type="password"
+        id="registerPassword"
+        placeholder="Sameyso password"
+        minlength="8"
+        autocomplete="new-password"
+        required>
 
       <label for="registerConfirmPassword">Xaqiiji Password</label>
-      <input type="password" id="registerConfirmPassword" placeholder="Ku celi password-ka" minlength="8" autocomplete="new-password" required>
+      <input
+        type="password"
+        id="registerConfirmPassword"
+        placeholder="Ku celi password-ka"
+        minlength="8"
+        autocomplete="new-password"
+        required>
 
       <p class="registration-role-note">
         <i class="fa-solid fa-book-open"></i>
@@ -579,21 +894,29 @@
 
       <p>
         Account ma leedahay?
-        <button type="button" id="showLoginBtn" class="text-button">Login</button>
+        <button type="button" id="showLoginBtn" class="text-button">
+          Login
+        </button>
       </p>
 
       <p id="registerMessage" class="form-message" aria-live="polite"></p>
+
     </form>
 
   </div>
 </div>
 
-<!-- MEMBER DASHBOARD -->
+
+<!-- =========================================
+     MEMBER DASHBOARD
+========================================= -->
 <section class="member-dashboard" id="memberDashboard" hidden>
+
   <div class="container">
 
     <!-- DASHBOARD HEADER -->
     <div class="dashboard-header">
+
       <div>
         <span class="dashboard-label">HAFID NOR MEDIA</span>
         <h2>Member Dashboard</h2>
@@ -604,10 +927,115 @@
         <i class="fa-solid fa-right-from-bracket"></i>
         Logout
       </button>
+
     </div>
+
+
+    <!-- =====================================
+         OWNER NEWS PUBLISHER
+    ====================================== -->
+    <section
+      id="ownerPublishPanel"
+      class="owner-publish-panel"
+      hidden>
+
+      <div class="owner-publish-header">
+
+        <div>
+          <span class="owner-label">OWNER DASHBOARD</span>
+          <h2>Ku dar War Cusub</h2>
+          <p>Halkan waxaad ku soo gelin kartaa wararka HAFID NOR MEDIA.</p>
+        </div>
+
+      </div>
+
+<form id="ownerNewsForm" class="owner-news-form">
+
+  <div class="form-group">
+    <label for="newsTitle">Cinwaanka Warka</label>
+    <input
+      type="text"
+      id="newsTitle"
+      placeholder="Geli cinwaanka warka"
+      maxlength="200"
+      required>
+  </div>
+
+  <div class="form-row">
+
+    <div class="form-group">
+      <label for="newsCategory">Qaybta Warka</label>
+      <select id="newsCategory" required>
+        <option value="">Dooro qaybta</option>
+        <option value="Siyaasadda">Siyaasadda</option>
+        <option value="Dhaqaalaha">Dhaqaalaha</option>
+        <option value="Ciyaaraha">Ciyaaraha</option>
+        <option value="Bulshada">Bulshada</option>
+        <option value="Caalamka">Caalamka</option>
+        <option value="Tiknoolajiyadda">Tiknoolajiyadda</option>
+        <option value="Soomaaliya">Soomaaliya</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="newsLocation">Goobta</label>
+      <input
+        type="text"
+        id="newsLocation"
+        placeholder="Tusaale: Muqdisho">
+    </div>
+
+  </div>
+
+  <div class="form-group">
+    <label for="newsImageFile">Sawirka Warka</label>
+    <input
+      type="file"
+      id="newsImageFile"
+      accept="image/*">
+
+    <img
+      id="newsImagePreview"
+      alt="Sawirka warka"
+      hidden
+      style="max-width:200px; margin-top:10px;">
+  </div>
+
+
+
+  <div class="form-group">
+    <label for="newsContent">Qoraalka Warka</label>
+    <textarea
+      id="newsContent"
+      rows="10"
+      placeholder="Halkan ku qor warka oo dhan..."
+      required></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="newsSource">Isha Warka (Ikhtiyaari)</label>
+    <input
+      type="url"
+      id="newsSource"
+      placeholder="https://source.com">
+  </div>
+
+  <button type="submit" id="publishNewsBtn">
+    <i class="fa-solid fa-paper-plane"></i>
+    Daabac Warka
+  </button>
+
+  <p
+    id="ownerNewsMessage"
+    role="status"
+    aria-live="polite"></p>
+
+</form>
+
 
     <!-- MEMBER PROFILE -->
     <div class="member-profile">
+
       <div class="profile-avatar">
         <i class="fa-solid fa-user"></i>
       </div>
@@ -617,31 +1045,39 @@
         <p id="memberDisplayEmail">email@example.com</p>
         <span id="memberRole">Member / Xubin</span>
       </div>
+
     </div>
+
 
     <!-- DASHBOARD TABS -->
     <div class="dashboard-tabs">
 
-      <button type="button"
+      <button
+        type="button"
         class="dashboard-tab active"
         data-dashboard-tab="publishedNews">
+
         <i class="fa-solid fa-newspaper"></i>
         Wararka Website-ka
       </button>
 
-      <button type="button"
+      <button
+        type="button"
         class="dashboard-tab"
         data-dashboard-tab="profile">
+
         <i class="fa-solid fa-user"></i>
         Profile-kayga
       </button>
 
     </div>
 
+
     <!-- PUBLISHED WEBSITE NEWS -->
     <div class="dashboard-panel" id="publishedNewsPanel">
 
       <div class="dashboard-panel-heading">
+
         <h3>
           <i class="fa-solid fa-newspaper"></i>
           Wararka HAFID NOR MEDIA
@@ -651,6 +1087,7 @@
           Halkaan waxaad ka akhrisan kartaa dhammaan wararka
           maamulka HAFID NOR MEDIA soo geliyey.
         </p>
+
       </div>
 
       <div id="publishedNewsList">
@@ -661,19 +1098,23 @@
 
     </div>
 
+
     <!-- MEMBER PROFILE PANEL -->
     <div class="dashboard-panel" id="memberProfilePanel" hidden>
 
       <div class="dashboard-panel-heading">
+
         <h3>
           <i class="fa-solid fa-user-pen"></i>
           Xogta Xubinta
         </h3>
 
         <p>Macluumaadka akoonkaaga HAFID NOR MEDIA.</p>
+
       </div>
 
       <div class="profile-details">
+
         <p>
           <strong>Magaca:</strong>
           <span id="profileName">-</span>
@@ -693,20 +1134,28 @@
           <strong>Taariikhda diiwaangelinta:</strong>
           <span id="profileDate">-</span>
         </p>
-      </div>
 
+      </div>
     </div>
 
   </div>
 </section>
 
-<!-- FOOTER -->
+
+<!-- =========================================
+     FOOTER
+========================================= -->
 <footer class="main-footer">
+
   <div class="container">
+
     <div class="footer-grid">
 
+      <!-- FOOTER ABOUT -->
       <div class="footer-about">
+
         <a href="#home" class="logo footer-logo">
+
           <div class="logo-icon">
             <i class="fa-solid fa-newspaper"></i>
           </div>
@@ -715,6 +1164,7 @@
             <h2>HAFID NOR <span>MEDIA</span></h2>
             <p data-i18n="tagline">XOG • XAQIIQO • WARAR</p>
           </div>
+
         </a>
 
         <p data-i18n="footerDescription">
@@ -727,58 +1177,92 @@
           <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
           <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
         </div>
+
       </div>
 
+
+      <!-- FOOTER CATEGORIES -->
       <div class="footer-links">
+
         <h3 data-i18n="categories">Qaybaha</h3>
+
         <a href="#somalia" data-i18n="somalia">Soomaaliya</a>
         <a href="#world" data-i18n="world">Caalamka</a>
         <a href="#politics" data-i18n="politics">Siyaasadda</a>
         <a href="#business" data-i18n="business">Dhaqaalaha</a>
         <a href="#sports" data-i18n="sports">Ciyaaraha</a>
+
       </div>
 
+
+      <!-- FOOTER INFORMATION -->
       <div class="footer-links">
+
         <h3 data-i18n="information">Macluumaad</h3>
+
         <a href="#about" data-i18n="about">Nagu Saabsan</a>
         <a href="mailto:contact@example.com" data-i18n="contactUs">Nala Soo Xiriir</a>
         <a href="#privacy" data-i18n="privacy">Privacy Policy</a>
         <a href="#terms" data-i18n="terms">Shuruudaha Adeegga</a>
+
       </div>
 
+
+      <!-- FOOTER CONTACT -->
       <div class="footer-links">
+
         <h3 data-i18n="contact">La Xiriir</h3>
+
         <a href="mailto:contact@example.com">
-          <i class="fa-regular fa-envelope"></i> Email
+          <i class="fa-regular fa-envelope"></i>
+          Email
         </a>
+
         <a href="#about">
           <i class="fa-solid fa-location-dot"></i>
           <span data-i18n="location">Muqdisho, Soomaaliya</span>
         </a>
+
         <a href="#">Facebook</a>
         <a href="#">YouTube</a>
+
       </div>
 
     </div>
 
+
+    <!-- FOOTER BOTTOM -->
     <div class="footer-bottom">
+
       <p>
         © <span id="currentYear"></span> HAFID NOR MEDIA.
-        <span data-i18n="copyright">Xuquuqda oo dhan way dhowran tahay.</span>
+        <span data-i18n="copyright">
+          Xuquuqda oo dhan way dhowran tahay.
+        </span>
       </p>
 
       <a href="#home" data-i18n="backTop">Kor u noqo ↑</a>
+
     </div>
 
   </div>
 </footer>
 
+
 <!-- BACK TO TOP -->
-<button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">
+<button
+  class="back-to-top"
+  id="backToTop"
+  type="button"
+  aria-label="Back to top">
+
   <i class="fa-solid fa-arrow-up"></i>
 </button>
 
-<!-- SUPABASE -->
+
+<!-- =========================================
+     SUPABASE JAVASCRIPT
+========================================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <!-- WEBSITE JAVASCRIPT -->

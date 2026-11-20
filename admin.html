@@ -1,0 +1,645 @@
+
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Dashboard | HAFID NOR MEDIA</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #102b46;
+      --primary-dark: #091d31;
+      --accent: #f47b35;
+      --background: #f3f6fa;
+      --white: #ffffff;
+      --text: #263445;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --danger: #dc3545;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    .topbar {
+      background: var(--primary);
+      color: white;
+      padding: 18px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .topbar small {
+      color: #d5e0ec;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 35px auto;
+    }
+
+    .login-card, .panel {
+      background: var(--white);
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.06);
+    }
+
+    .login-card {
+      max-width: 430px;
+      margin: 60px auto;
+    }
+
+    h1, h2, h3 {
+      color: var(--primary);
+    }
+
+    .login-card h2 {
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 13px 18px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      opacity: .9;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .full {
+      width: 100%;
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-header p {
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .news-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .news-item {
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .news-item h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .news-item p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .news-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .news-actions button {
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        margin: 20px auto;
+      }
+
+      .panel, .login-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">HAFID NOR <span>MEDIA</span></div>
+    <small>OWNER CONTROL PANEL</small>
+  </header>
+
+  <main class="container">
+
+    <!-- OWNER LOGIN -->
+    <section id="loginSection" class="login-card">
+      <h2>Owner Login</h2>
+      <p class="muted">Geli akoonkaaga Owner-ka.</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="Owner email">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="Password">
+        </div>
+
+        <button class="btn full" type="submit" id="loginBtn">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Gal Dashboard
+        </button>
+
+        <p id="loginMessage" class="message" role="status"></p>
+      </form>
+    </section>
+
+    <!-- OWNER DASHBOARD -->
+    <section id="dashboardSection" class="hidden">
+
+      <div class="dashboard-header">
+        <div>
+          <h1>Owner Dashboard</h1>
+          <p>Ku soo dhowow maamulka HAFID NOR MEDIA.</p>
+        </div>
+
+        <button class="btn btn-primary" id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Ka bax
+        </button>
+      </div>
+
+      <!-- PUBLISH NEWS -->
+      <section class="panel">
+        <h2 id="formHeading">Ku dar War Cusub</h2>
+        <p class="muted">Halkan ku qor wararka aad rabto inaad daabacdo.</p>
+
+        <form id="newsForm">
+
+          <div class="form-group">
+            <label for="newsTitle">Cinwaanka Warka</label>
+            <input type="text" id="newsTitle"
+              maxlength="200" required
+              placeholder="Geli cinwaanka warka">
+          </div>
+
+          <div class="grid">
+            <div class="form-group">
+              <label for="newsCategory">Qaybta Warka</label>
+              <select id="newsCategory" required>
+                <option value="">Dooro qaybta</option>
+                <option value="Somalia">Somalia</option>
+                <option value="World">World</option>
+                <option value="Politics">Politics</option>
+                <option value="Business">Business</option>
+                <option value="Sports">Sports</option>
+                <option value="Technology">Technology</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="newsLocation">Goobta</label>
+              <input type="text" id="newsLocation"
+                placeholder="Tusaale: Muqdisho">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newsImage">Sawirka Warka (URL)</label>
+            <input type="url" id="newsImage"
+              placeholder="https://example.com/image.jpg">
+          </div>
+
+          <div class="form-group">
+            <label for="newsSummary">Dulmarka Warka</label>
+            <textarea id="newsSummary" maxlength="500"
+              required placeholder="Qor dulmar kooban..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="newsContent">Qoraalka Warka</label>
+            <textarea id="newsContent" rows="9"
+              required placeholder="Halkan ku qor warka oo dhan..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="newsSource">Isha Warka (Ikhtiyaari)</label>
+            <input type="url" id="newsSource"
+              placeholder="https://source.com">
+          </div>
+
+          <button type="submit" class="btn" id="publishBtn">
+            <i class="fa-solid fa-paper-plane"></i>
+            Daabac Warka
+          </button>
+
+          <button type="button" class="btn btn-primary hidden" id="cancelEditBtn">
+            Jooji Wax-ka-beddelka
+          </button>
+
+          <p id="newsMessage" class="message" role="status"></p>
+        </form>
+      </section>
+
+      <!-- MANAGE NEWS -->
+      <section class="panel" style="margin-top:25px">
+        <h2>Wararka La Daabacay</h2>
+        <div id="newsList" class="news-list">
+          <p class="muted">Wararka waa la soo rarayaa...</p>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    "use strict";
+
+    // SUPABASE CONFIGURATION
+    const SUPABASE_URL =
+      "https://ccddbcbmypeianekxhez.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_orYahZVqH7xGceVZqORwFA_npWRYBlw";
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const byId = (id) => document.getElementById(id);
+
+    const loginSection = byId("loginSection");
+    const dashboardSection = byId("dashboardSection");
+    const loginForm = byId("loginForm");
+    const newsForm = byId("newsForm");
+
+    let currentUser = null;
+    let editingNewsId = null;
+
+    function showMessage(element, message, success = false) {
+      element.textContent = message;
+      element.style.color = success ? "#16803c" : "#dc3545";
+    }
+
+    // CHECK OWNER ROLE
+    async function checkOwner(user) {
+      const { data, error } = await db
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (error || !data || data.role !== "owner") {
+        await db.auth.signOut();
+        currentUser = null;
+        loginSection.classList.remove("hidden");
+        dashboardSection.classList.add("hidden");
+
+        showMessage(
+          byId("loginMessage"),
+          "Akoontan ma laha rukhsadda Owner-ka."
+        );
+        return false;
+      }
+
+      currentUser = user;
+      loginSection.classList.add("hidden");
+      dashboardSection.classList.remove("hidden");
+
+      await loadNews();
+      return true;
+    }
+
+    // LOGIN
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const button = byId("loginBtn");
+      button.disabled = true;
+
+      showMessage(byId("loginMessage"), "Waa la gelinayaa...", true);
+
+      const { data, error } = await db.auth.signInWithPassword({
+        email: byId("email").value.trim(),
+        password: byId("password").value
+      });
+
+      if (error) {
+        showMessage(byId("loginMessage"), error.message);
+        button.disabled = false;
+        return;
+      }
+
+      const allowed = await checkOwner(data.user);
+
+      if (!allowed) {
+        button.disabled = false;
+      }
+    });
+
+    // LOGOUT
+    byId("logoutBtn").addEventListener("click", async () => {
+      await db.auth.signOut();
+      currentUser = null;
+      dashboardSection.classList.add("hidden");
+      loginSection.classList.remove("hidden");
+      loginForm.reset();
+    });
+
+    // PUBLISH OR UPDATE NEWS
+    newsForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!currentUser) return;
+
+      const button = byId("publishBtn");
+      button.disabled = true;
+
+      const newsData = {
+        title: byId("newsTitle").value.trim(),
+        category: byId("newsCategory").value,
+        location: byId("newsLocation").value.trim(),
+        image_url: byId("newsImage").value.trim() || null,
+        summary: byId("newsSummary").value.trim(),
+        content: byId("newsContent").value.trim(),
+        source_url: byId("newsSource").value.trim() || null,
+        author_id: currentUser.id,
+        status: "published"
+      };
+
+      let result;
+
+      if (editingNewsId) {
+        result = await db
+          .from("news")
+          .update(newsData)
+          .eq("id", editingNewsId);
+      } else {
+        result = await db
+          .from("news")
+          .insert([newsData]);
+      }
+
+      if (result.error) {
+        showMessage(byId("newsMessage"), result.error.message);
+      } else {
+        showMessage(
+          byId("newsMessage"),
+          editingNewsId ? "Warka waa la cusbooneysiiyey." :
+          "Warka si guul leh ayaa loo daabacay.",
+          true
+        );
+
+        newsForm.reset();
+        editingNewsId = null;
+        byId("formHeading").textContent = "Ku dar War Cusub";
+        button.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Daabac Warka';
+        byId("cancelEditBtn").classList.add("hidden");
+
+        await loadNews();
+      }
+
+      button.disabled = false;
+    });
+
+    // LOAD NEWS
+    async function loadNews() {
+      const list = byId("newsList");
+      list.textContent = "Wararka waa la soo rarayaa...";
+
+      const { data, error } = await db
+        .from("news")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        list.textContent = "Cilad: " + error.message;
+        return;
+      }
+
+      list.innerHTML = "";
+
+      if (!data || data.length === 0) {
+        list.textContent = "Weli wax war ah lama daabicin.";
+        return;
+      }
+
+      data.forEach((news) => {
+        const item = document.createElement("article");
+        item.className = "news-item";
+
+        const details = document.createElement("div");
+        const heading = document.createElement("h3");
+        const category = document.createElement("p");
+
+        heading.textContent = news.title;
+        category.textContent = news.category || "";
+
+        details.append(heading, category);
+
+        const actions = document.createElement("div");
+        actions.className = "news-actions";
+
+        const editButton = document.createElement("button");
+        editButton.className = "btn btn-primary";
+        editButton.textContent = "Wax ka beddel";
+        editButton.addEventListener("click", () => editNews(news));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-danger";
+        deleteButton.textContent = "Tirtir";
+        deleteButton.addEventListener("click", () => deleteNews(news.id));
+
+        actions.append(editButton, deleteButton);
+        item.append(details, actions);
+        list.appendChild(item);
+      });
+    }
+
+    // EDIT NEWS
+    function editNews(news) {
+      editingNewsId = news.id;
+
+      byId("newsTitle").value = news.title || "";
+      byId("newsCategory").value = news.category || "";
+      byId("newsLocation").value = news.location || "";
+      byId("newsImage").value = news.image_url || "";
+      byId("newsSummary").value = news.summary || "";
+      byId("newsContent").value = news.content || "";
+      byId("newsSource").value = news.source_url || "";
+
+      byId("formHeading").textContent = "Wax ka beddel Warka";
+      byId("publishBtn").textContent = "Kaydi Isbeddelka";
+      byId("cancelEditBtn").classList.remove("hidden");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // CANCEL EDIT
+    byId("cancelEditBtn").addEventListener("click", () => {
+      editingNewsId = null;
+      newsForm.reset();
+      byId("formHeading").textContent = "Ku dar War Cusub";
+      byId("publishBtn").textContent = "Daabac Warka";
+      byId("cancelEditBtn").classList.add("hidden");
+    });
+
+    // DELETE NEWS
+    async function deleteNews(id) {
+      if (!confirm("Ma hubtaa inaad tirtirayso warkan?")) return;
+
+      const { error } = await db
+        .from("news")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        alert("Cilad ayaa dhacday: " + error.message);
+        return;
+      }
+
+      alert("Warka waa la tirtiray.");
+      await loadNews();
+    }
+
+    // CHECK EXISTING SESSION
+    async function initialize() {
+      const { data, error } = await db.auth.getSession();
+
+      if (error || !data.session) return;
+
+      await checkOwner(data.session.user);
+    }
+
+    initialize();
+
+    // AUTH SESSION CHANGES
+    db.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        currentUser = null;
+        dashboardSection.classList.add("hidden");
+        loginSection.classList.remove("hidden");
+      }
+    });
+  </script>
+
+</body>
+</html>
