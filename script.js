@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
      HAFID NOR MEDIA
-     PROFESSIONAL MERGED JAVASCRIPT
+     COMPLETE MERGED JAVASCRIPT
      Supabase + Authentication + News + Dashboard
   ===================================================== */
 
@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const STORAGE_BUCKET = "news-images";
 
-  // Owner-ka rasmiga ah
-  const OWNER_ID = "9d5c8d5f-02ed-4bd4-a03a-96a9dacb70d2";
+  const OWNER_ID =
+    "9d5c8d5f-02ed-4bd4-a03a-96a9dacb70d2";
 
   if (!window.supabase) {
     console.error("Supabase CDN lama soo shubin.");
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let authInitialized = false;
 
   /* =====================================================
-     3. HELPER FUNCTIONS
+     3. HELPERS
   ===================================================== */
 
   function getValue(...ids) {
@@ -76,13 +76,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function escapeHTML(value = "") {
-    return String(value).replace(/[&<>"']/g, (character) => ({
+    return String(value).replace(/[&<>"']/g, (char) => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#039;"
-    })[character]);
+    })[char]);
   }
 
   function showMessage(element, message, type = "info") {
@@ -104,16 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!button) return;
 
     if (loading) {
-      button.dataset.originalText =
-        button.textContent.trim() || defaultText;
+      if (!button.dataset.originalHTML) {
+        button.dataset.originalHTML = button.innerHTML;
+      }
 
       button.disabled = true;
       button.textContent = "Fadlan sug...";
     } else {
       button.disabled = false;
 
-      button.textContent =
-        button.dataset.originalText || defaultText;
+      if (button.dataset.originalHTML) {
+        button.innerHTML = button.dataset.originalHTML;
+        delete button.dataset.originalHTML;
+      } else {
+        button.textContent = defaultText;
+      }
     }
   }
 
@@ -124,17 +129,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (Number.isNaN(parsed.getTime())) return "";
 
-    const locale = {
+    const locales = {
       so: "so-SO",
       en: "en-US",
       ar: "ar"
-    }[currentLanguage] || "so-SO";
+    };
 
-    return parsed.toLocaleDateString(locale, {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
+    return parsed.toLocaleDateString(
+      locales[currentLanguage] || "so-SO",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }
+    );
   }
 
   function makeSummary(content) {
@@ -151,10 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const url = new URL(value);
 
-      return (
-        url.protocol === "https:" ||
-        url.protocol === "http:"
-      );
+      return ["https:", "http:"].includes(url.protocol);
     } catch {
       return false;
     }
@@ -163,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function getSavedValue(key, fallback = null) {
     try {
       const value = localStorage.getItem(key);
-
       return value ? JSON.parse(value) : fallback;
     } catch {
       return fallback;
@@ -190,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     4. DATE AND COPYRIGHT YEAR
+     4. DATE AND COPYRIGHT
   ===================================================== */
 
   function updateDate() {
@@ -198,14 +202,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!element) return;
 
-    const locale = {
+    const locales = {
       so: "so-SO",
       en: "en-US",
       ar: "ar"
-    }[currentLanguage] || "so-SO";
+    };
 
     element.textContent = new Date().toLocaleDateString(
-      locale,
+      locales[currentLanguage] || "so-SO",
       {
         weekday: "long",
         day: "numeric",
@@ -228,7 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeMobileMenu() {
     mainNav?.classList.remove("active");
     menuToggle?.classList.remove("active");
-
     menuToggle?.setAttribute("aria-expanded", "false");
 
     const icon = $("i", menuToggle);
@@ -244,11 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const opened = mainNav.classList.toggle("active");
 
     menuToggle.classList.toggle("active", opened);
-
-    menuToggle.setAttribute(
-      "aria-expanded",
-      String(opened)
-    );
+    menuToggle.setAttribute("aria-expanded", String(opened));
 
     const icon = $("i", menuToggle);
 
@@ -281,11 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dark = theme === "dark";
 
     document.body.classList.toggle("dark-mode", dark);
-
-    document.documentElement.classList.toggle(
-      "dark-mode",
-      dark
-    );
+    document.documentElement.classList.toggle("dark-mode", dark);
 
     const icon = $("i", darkModeBtn);
 
@@ -304,7 +299,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   darkModeBtn?.addEventListener("click", () => {
     const dark = document.body.classList.contains("dark-mode");
-
     applyTheme(dark ? "light" : "dark");
   });
 
@@ -324,15 +318,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function applyColors(primary, accent) {
-    document.documentElement.style.setProperty(
-      "--primary",
-      primary
-    );
-
-    document.documentElement.style.setProperty(
-      "--accent",
-      accent
-    );
+    document.documentElement.style.setProperty("--primary", primary);
+    document.documentElement.style.setProperty("--accent", accent);
 
     if (primaryColor) primaryColor.value = primary;
     if (accentColor) accentColor.value = accent;
@@ -346,20 +333,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applyColors(colors.primary, colors.accent);
 
-    localStorage.setItem(
-      "hafid-colors",
-      JSON.stringify(colors)
-    );
-
-    localStorage.setItem(
-      "hafid-primary",
-      colors.primary
-    );
-
-    localStorage.setItem(
-      "hafid-accent",
-      colors.accent
-    );
+    localStorage.setItem("hafid-colors", JSON.stringify(colors));
+    localStorage.setItem("hafid-primary", colors.primary);
+    localStorage.setItem("hafid-accent", colors.accent);
   }
 
   const savedColors = getSavedValue("hafid-colors");
@@ -382,10 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
     colorPanel.classList.toggle("show", opened);
     colorPanel.hidden = !opened;
 
-    colorPickerBtn.setAttribute(
-      "aria-expanded",
-      String(opened)
-    );
+    colorPickerBtn.setAttribute("aria-expanded", String(opened));
   });
 
   primaryColor?.addEventListener("input", saveColors);
@@ -400,21 +373,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       applyColors(primary, accent);
 
-      localStorage.setItem(
-        "hafid-colors",
-        JSON.stringify({ primary, accent })
-      );
+      const colors = { primary, accent };
 
+      localStorage.setItem("hafid-colors", JSON.stringify(colors));
       localStorage.setItem("hafid-primary", primary);
       localStorage.setItem("hafid-accent", accent);
     });
   });
 
   resetColors?.addEventListener("click", () => {
-    applyColors(
-      defaultColors.primary,
-      defaultColors.accent
-    );
+    applyColors(defaultColors.primary, defaultColors.accent);
 
     localStorage.removeItem("hafid-colors");
     localStorage.removeItem("hafid-primary");
@@ -430,25 +398,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = byId("searchInput");
   const searchSubmit = byId("searchSubmit");
 
-  searchBtn?.addEventListener("click", () => {
-    if (!searchBox) return;
-
-    const opened = searchBox.classList.toggle("active");
-
-    searchBox.classList.toggle("show", opened);
-    searchBox.hidden = !opened;
-
-    if (opened) {
-      searchInput?.focus();
-    } else {
-      searchInput.value = "";
-      performSearch();
-    }
-  });
-
   function performSearch() {
-    const query =
-      searchInput?.value.trim().toLowerCase() || "";
+    const query = searchInput?.value.trim().toLowerCase() || "";
 
     const cards = $$(
       ".news-card, .side-news, .category-item, [data-news-card]"
@@ -457,9 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let found = 0;
 
     cards.forEach((card) => {
-      const matches = card.textContent
-        .toLowerCase()
-        .includes(query);
+      const matches = card.textContent.toLowerCase().includes(query);
 
       card.hidden = !matches;
 
@@ -478,8 +427,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  searchSubmit?.addEventListener("click", performSearch);
+  searchBtn?.addEventListener("click", () => {
+    if (!searchBox) return;
 
+    const opened = searchBox.classList.toggle("active");
+
+    searchBox.classList.toggle("show", opened);
+    searchBox.hidden = !opened;
+
+    if (opened) {
+      searchInput?.focus();
+    } else {
+      if (searchInput) searchInput.value = "";
+      performSearch();
+    }
+  });
+
+  searchSubmit?.addEventListener("click", performSearch);
   searchInput?.addEventListener("input", performSearch);
 
   searchInput?.addEventListener("keydown", (event) => {
@@ -526,7 +490,10 @@ document.addEventListener("DOMContentLoaded", () => {
       technology: "Tiknoolajiyadda",
       videos: "Muuqaallo",
       privacy: "Xeerka Asturnaanta",
-      terms: "Shuruudaha Adeegga"
+      terms: "Shuruudaha Adeegga",
+      readSource: "Isha warka",
+      close: "Xir",
+      noNews: "Weli wax warar ah lama daabicin."
     },
 
     en: {
@@ -561,7 +528,10 @@ document.addEventListener("DOMContentLoaded", () => {
       technology: "Technology",
       videos: "Videos",
       privacy: "Privacy Policy",
-      terms: "Terms of Service"
+      terms: "Terms of Service",
+      readSource: "News source",
+      close: "Close",
+      noNews: "No news has been published yet."
     },
 
     ar: {
@@ -596,7 +566,10 @@ document.addEventListener("DOMContentLoaded", () => {
       technology: "التكنولوجيا",
       videos: "مقاطع الفيديو",
       privacy: "سياسة الخصوصية",
-      terms: "شروط الخدمة"
+      terms: "شروط الخدمة",
+      readSource: "مصدر الخبر",
+      close: "إغلاق",
+      noNews: "لم يتم نشر أي أخبار بعد."
     }
   };
 
@@ -608,15 +581,11 @@ document.addEventListener("DOMContentLoaded", () => {
     currentLanguage = language;
 
     document.documentElement.lang = language;
-
     document.documentElement.dir =
       language === "ar" ? "rtl" : "ltr";
 
     $$("[data-i18n], [data-translate]").forEach((element) => {
-      const key =
-        element.dataset.i18n ||
-        element.dataset.translate;
-
+      const key = element.dataset.i18n || element.dataset.translate;
       const value = translations[language][key];
 
       if (value !== undefined) {
@@ -636,6 +605,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDate();
 
     localStorage.setItem("hafid-language", language);
+
+    // Re-render news using the selected language.
+    renderPublishedNews(currentNews);
+    renderDashboardNews(currentNews);
   }
 
   const languageSelect = byId("languageSelect");
@@ -664,7 +637,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     authModal.hidden = false;
     authModal.classList.add("active", "show");
-
     authModal.setAttribute("aria-hidden", "false");
   }
 
@@ -673,7 +645,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     authModal.hidden = true;
     authModal.classList.remove("active", "show");
-
     authModal.setAttribute("aria-hidden", "true");
   }
 
@@ -690,30 +661,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  byId("closeAuthModal")?.addEventListener(
-    "click",
-    closeAuthModal
-  );
+  byId("closeAuthModal")?.addEventListener("click", closeAuthModal);
 
   $$("[data-close-modal], .close-modal").forEach((button) => {
     button.addEventListener("click", closeAuthModal);
   });
 
   authModal?.addEventListener("click", (event) => {
-    if (event.target === authModal) {
-      closeAuthModal();
-    }
+    if (event.target === authModal) closeAuthModal();
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeAuthModal();
 
-      const modal =
-        byId("newsDetailsModal") ||
-        byId("newsDetailModal");
-
-      modal?.remove();
+      byId("newsDetailsModal")?.remove();
+      byId("newsDetailModal")?.remove();
     }
   });
 
@@ -722,26 +685,16 @@ document.addEventListener("DOMContentLoaded", () => {
   ===================================================== */
 
   function showLoginForm() {
-    if (byId("loginForm")) {
-      byId("loginForm").hidden = false;
-    }
-
-    if (byId("registerForm")) {
-      byId("registerForm").hidden = true;
-    }
+    if (byId("loginForm")) byId("loginForm").hidden = false;
+    if (byId("registerForm")) byId("registerForm").hidden = true;
 
     clearMessage(byId("loginMessage"));
     clearMessage(byId("registerMessage"));
   }
 
   function showRegisterForm() {
-    if (byId("loginForm")) {
-      byId("loginForm").hidden = true;
-    }
-
-    if (byId("registerForm")) {
-      byId("registerForm").hidden = false;
-    }
+    if (byId("loginForm")) byId("loginForm").hidden = true;
+    if (byId("registerForm")) byId("registerForm").hidden = false;
 
     clearMessage(byId("loginMessage"));
     clearMessage(byId("registerMessage"));
@@ -777,14 +730,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (error) throw error;
 
       currentProfile = data;
-
       return data;
 
     } catch (error) {
       console.error("Profile loading error:", error);
-
       currentProfile = null;
-
       return null;
     }
   }
@@ -837,12 +787,6 @@ document.addEventListener("DOMContentLoaded", () => {
       closeAuthModal();
       loginForm.reset();
 
-      showMessage(
-        message,
-        "Waad ku guulaysatay inaad gasho.",
-        "success"
-      );
-
     } catch (error) {
       console.error("Login error:", error);
 
@@ -881,10 +825,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "signupName"
     );
 
-    const email = getValue(
-      "registerEmail",
-      "signupEmail"
-    );
+    const email = getValue("registerEmail", "signupEmail");
 
     const password =
       byId("registerPassword")?.value ||
@@ -897,11 +838,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "";
 
     if (!name || !email || !password || !confirmPassword) {
-      showMessage(
-        message,
-        "Fadlan buuxi dhammaan meelaha.",
-        "error"
-      );
+      showMessage(message, "Fadlan buuxi dhammaan meelaha.", "error");
       return;
     }
 
@@ -915,11 +852,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (password !== confirmPassword) {
-      showMessage(
-        message,
-        "Labada password isma laha.",
-        "error"
-      );
+      showMessage(message, "Labada password isma laha.", "error");
       return;
     }
 
@@ -930,9 +863,7 @@ document.addEventListener("DOMContentLoaded", () => {
         email,
         password,
         options: {
-          data: {
-            full_name: name
-          }
+          data: { full_name: name }
         }
       });
 
@@ -976,57 +907,48 @@ document.addEventListener("DOMContentLoaded", () => {
      15. FORGOT PASSWORD
   ===================================================== */
 
-  byId("forgotPasswordBtn")?.addEventListener(
-    "click",
-    async () => {
-      const email = getValue("loginEmail");
-      const message = byId("loginMessage");
+  byId("forgotPasswordBtn")?.addEventListener("click", async () => {
+    const email = getValue("loginEmail");
+    const message = byId("loginMessage");
 
-      clearMessage(message);
+    clearMessage(message);
 
-      if (!email) {
-        showMessage(
-          message,
-          "Marka hore geli email-kaaga.",
-          "error"
-        );
-        return;
-      }
-
-      try {
-        const { error } =
-          await db.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin
-          });
-
-        if (error) throw error;
-
-        showMessage(
-          message,
-          "Linkiga dib-u-dejinta password-ka waxaa lagu diray email-kaaga.",
-          "success"
-        );
-
-      } catch (error) {
-        console.error("Password reset error:", error);
-
-        showMessage(
-          message,
-          error.message || "Password reset wuu fashilmay.",
-          "error"
-        );
-      }
+    if (!email) {
+      showMessage(message, "Marka hore geli email-kaaga.", "error");
+      return;
     }
-  );
+
+    try {
+      const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin
+      });
+
+      if (error) throw error;
+
+      showMessage(
+        message,
+        "Linkiga dib-u-dejinta password-ka waxaa lagu diray email-kaaga.",
+        "success"
+      );
+
+    } catch (error) {
+      console.error("Password reset error:", error);
+
+      showMessage(
+        message,
+        error.message || "Password reset wuu fashilmay.",
+        "error"
+      );
+    }
+  });
 
   /* =====================================================
-     16. UPDATE MEMBER DASHBOARD
+     16. UPDATE DASHBOARD
   ===================================================== */
 
   async function updateDashboard() {
     if (!currentUser) {
       currentProfile = null;
-
       setDashboardVisible(false);
 
       if (byId("ownerPublishPanel")) {
@@ -1034,7 +956,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       setText("accountBtnText", "Account");
-
       return;
     }
 
@@ -1060,31 +981,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setText("profileName", name);
     setText("profileEmail", currentUser.email);
-
-    setText(
-      "profileType",
-      owner ? "Owner" : "Reader"
-    );
-
-    setText(
-      "profileDate",
-      formatDate(currentUser.created_at)
-    );
+    setText("profileType", owner ? "Owner" : "Reader");
+    setText("profileDate", formatDate(currentUser.created_at));
 
     const ownerPanel = byId("ownerPublishPanel");
-
-    if (ownerPanel) {
-      ownerPanel.hidden = !owner;
-    }
+    if (ownerPanel) ownerPanel.hidden = !owner;
 
     const ownerBadge = byId("ownerBadge");
-
-    if (ownerBadge) {
-      ownerBadge.hidden = !owner;
-    }
+    if (ownerBadge) ownerBadge.hidden = !owner;
 
     setText("accountBtnText", name);
-
     setDashboardVisible(true);
 
     await loadMySubmissions();
@@ -1109,14 +1015,12 @@ document.addEventListener("DOMContentLoaded", () => {
       currentNews = [];
 
       setDashboardVisible(false);
-
       closeAuthModal();
 
       window.location.reload();
 
     } catch (error) {
       console.error("Logout error:", error);
-
       alert("Ka bixitaanku wuu fashilmay: " + error.message);
     }
   }
@@ -1124,7 +1028,7 @@ document.addEventListener("DOMContentLoaded", () => {
   byId("logoutBtn")?.addEventListener("click", logoutUser);
 
   /* =====================================================
-     18. SUPABASE IMAGE UPLOAD
+     18. IMAGE UPLOAD
   ===================================================== */
 
   async function uploadNewsImage(file) {
@@ -1195,19 +1099,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!file.type.startsWith("image/")) {
         alert("Fadlan dooro sawir sax ah.");
-
         input.value = "";
         preview.hidden = true;
-
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
         alert("Sawirku waa inuusan ka weynaan 5MB.");
-
         input.value = "";
         preview.hidden = true;
-
         return;
       }
 
@@ -1216,6 +1116,10 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.onload = () => {
         preview.src = reader.result;
         preview.hidden = false;
+      };
+
+      reader.onerror = () => {
+        alert("Sawirka lama akhrin karin.");
       };
 
       reader.readAsDataURL(file);
@@ -1230,7 +1134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   /* =====================================================
-     20. PUBLISH OWNER NEWS
+     20. OWNER PUBLISH NEWS
   ===================================================== */
 
   const ownerNewsForm = byId("ownerNewsForm");
@@ -1247,11 +1151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearMessage(message);
 
     if (!currentUser) {
-      showMessage(
-        message,
-        "Fadlan marka hore login samee.",
-        "error"
-      );
+      showMessage(message, "Fadlan marka hore login samee.", "error");
       return;
     }
 
@@ -1272,9 +1172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = getValue("newsContent");
     const sourceUrl = getValue("newsSource");
     const imageUrlInput = getValue("newsImage");
-
-    const imageFile =
-      byId("newsImageFile")?.files?.[0];
+    const imageFile = byId("newsImageFile")?.files?.[0];
 
     if (!title || !category || !content) {
       showMessage(
@@ -1354,7 +1252,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
      21. MEMBER NEWS SUBMISSION
-     MEMBER NEWS = PENDING
   ===================================================== */
 
   const memberNewsForm = byId("memberNewsForm");
@@ -1371,11 +1268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearMessage(message);
 
     if (!currentUser) {
-      showMessage(
-        message,
-        "Fadlan marka hore login samee.",
-        "error"
-      );
+      showMessage(message, "Fadlan marka hore login samee.", "error");
       return;
     }
 
@@ -1398,11 +1291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!isValidUrl(sourceUrl)) {
-      showMessage(
-        message,
-        "Isha warka URL-keedu sax ma aha.",
-        "error"
-      );
+      showMessage(message, "Isha warka URL-keedu sax ma aha.", "error");
       return;
     }
 
@@ -1468,6 +1357,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadPublishedNews() {
     const homeContainer = byId("publishedNewsList");
+
     const dashboardContainer =
       byId("dashboardPublishedNewsList") ||
       byId("dashboardNewsList");
@@ -1497,9 +1387,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const errorHTML =
         '<p class="error-message">Wararka lama soo bandhigi karin. Hubi Supabase RLS policies.</p>';
 
-      if (homeContainer) {
-        homeContainer.innerHTML = errorHTML;
-      }
+      if (homeContainer) homeContainer.innerHTML = errorHTML;
 
       if (dashboardContainer) {
         dashboardContainer.innerHTML = errorHTML;
@@ -1518,12 +1406,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!news || news.length === 0) {
       container.innerHTML =
-        '<p class="no-news">Weli wax warar ah lama daabicin.</p>';
+        `<p class="no-news">${escapeHTML(translations[currentLanguage].noNews)}</p>`;
       return;
     }
 
     container.innerHTML = news.map((item) => {
-      const title = escapeHTML(item.title);
+      const title = escapeHTML(item.title || "");
       const category = escapeHTML(item.category || "Warar");
 
       const summary = escapeHTML(
@@ -1532,18 +1420,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const location = escapeHTML(item.location || "");
 
-      const image = item.image_url &&
-        isValidUrl(item.image_url)
-        ? `
-          <div class="news-image">
-            <img
-              src="${escapeHTML(item.image_url)}"
-              alt="${title}"
-              loading="lazy"
-              onerror="this.parentElement.style.display='none'">
-          </div>
-        `
-        : "";
+      const image =
+        item.image_url && isValidUrl(item.image_url)
+          ? `
+            <div class="news-image">
+              <img
+                src="${escapeHTML(item.image_url)}"
+                alt="${title}"
+                loading="lazy"
+                onerror="this.parentElement.style.display='none'">
+            </div>
+          `
+          : "";
 
       return `
         <article
@@ -1575,7 +1463,7 @@ document.addEventListener("DOMContentLoaded", () => {
               class="read-more read-more-btn"
               data-read-news="${escapeHTML(item.id)}">
 
-              Akhri Warka
+              ${escapeHTML(translations[currentLanguage].readNews)}
               <i class="fa-solid fa-arrow-right"></i>
             </button>
 
@@ -1598,8 +1486,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!container) return;
 
     if (!news || news.length === 0) {
-      container.innerHTML =
-        "<p>Weli warar lama daabicin.</p>";
+      container.innerHTML = "<p>Weli warar lama daabicin.</p>";
       return;
     }
 
@@ -1665,7 +1552,7 @@ document.addEventListener("DOMContentLoaded", () => {
               href="${escapeHTML(item.source_url)}"
               target="_blank"
               rel="noopener noreferrer">
-              Isha warka
+              ${escapeHTML(translations[currentLanguage].readSource)}
             </a>
           </p>
         `
@@ -1677,7 +1564,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <button
           type="button"
           class="news-details-close news-detail-close"
-          aria-label="Close">
+          aria-label="${escapeHTML(translations[currentLanguage].close)}">
           <i class="fa-solid fa-xmark"></i>
         </button>
 
@@ -1720,14 +1607,10 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("active", "show");
 
     modal.querySelector(".news-details-close")
-      ?.addEventListener("click", () => {
-        modal.remove();
-      });
+      ?.addEventListener("click", () => modal.remove());
 
     modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        modal.remove();
-      }
+      if (event.target === modal) modal.remove();
     });
   }
 
@@ -1736,28 +1619,32 @@ document.addEventListener("DOMContentLoaded", () => {
   ===================================================== */
 
   document.addEventListener("click", (event) => {
-    const readButton = event.target.closest("[data-read-news]");
+    const target = event.target;
+
+    if (!(target instanceof Element)) return;
+
+    const readButton = target.closest("[data-read-news]");
 
     if (readButton) {
       openNewsDetails(readButton.dataset.readNews);
       return;
     }
 
-    const deleteButton = event.target.closest("[data-delete-news]");
+    const deleteButton = target.closest("[data-delete-news]");
 
     if (deleteButton) {
       deleteNews(deleteButton.dataset.deleteNews);
       return;
     }
 
-    const approveButton = event.target.closest("[data-approve-news]");
+    const approveButton = target.closest("[data-approve-news]");
 
     if (approveButton) {
       moderateNews(approveButton.dataset.approveNews, "approved");
       return;
     }
 
-    const rejectButton = event.target.closest("[data-reject-news]");
+    const rejectButton = target.closest("[data-reject-news]");
 
     if (rejectButton) {
       moderateNews(rejectButton.dataset.rejectNews, "rejected");
@@ -1800,7 +1687,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <p>${escapeHTML(item.category || "")}</p>
 
-          <p>${escapeHTML(item.summary || makeSummary(item.content))}</p>
+          <p>${escapeHTML(
+            item.summary || makeSummary(item.content)
+          )}</p>
 
           <small>${formatDate(item.created_at)}</small>
 
@@ -1845,9 +1734,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (!["approved", "rejected"].includes(status)) {
-      return;
-    }
+    if (!["approved", "rejected"].includes(status)) return;
 
     const question = status === "approved"
       ? "Ma oggolaanaysaa in warkan la daabaco?"
@@ -1876,7 +1763,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (error) {
       console.error("Moderation error:", error);
-
       alert("Hawsha way fashilantay: " + error.message);
     }
   }
@@ -1895,9 +1781,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (!confirm("Ma hubtaa inaad tirtirayso warkan?")) {
-      return;
-    }
+    if (!confirm("Ma hubtaa inaad tirtirayso warkan?")) return;
 
     try {
       const { error } = await db
@@ -1915,7 +1799,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (error) {
       console.error("Delete news error:", error);
-
       alert("Warka lama tirtiri karin: " + error.message);
     }
   }
@@ -1946,8 +1829,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let html = "";
 
       if (!data || data.length === 0) {
-        html =
-          "<p>Weli ma aadan soo gudbin wax war ah.</p>";
+        html = "<p>Weli ma aadan soo gudbin wax war ah.</p>";
       } else {
         html = data.map((item) => `
           <article class="submission-item">
@@ -1974,8 +1856,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("My submissions error:", error);
 
       containers.forEach((container) => {
-        container.innerHTML =
-          "<p>Wararkaaga lama soo gelin karin.</p>";
+        container.innerHTML = "<p>Wararkaaga lama soo gelin karin.</p>";
       });
     }
   }
@@ -2010,15 +1891,10 @@ document.addEventListener("DOMContentLoaded", () => {
   $$(".dashboard-tab").forEach((tab) => {
     tab.addEventListener("click", () => {
       const targetName = tab.dataset.dashboardTab;
-
-      const panelId =
-        dashboardTabMap[targetName] || targetName;
-
+      const panelId = dashboardTabMap[targetName] || targetName;
       const panel = byId(panelId);
 
-      if (panel) {
-        activateDashboardTab(tab, panel);
-      }
+      if (panel) activateDashboardTab(tab, panel);
     });
   });
 
@@ -2028,18 +1904,18 @@ document.addEventListener("DOMContentLoaded", () => {
     tab.addEventListener("click", () => {
       const panel = byId(tab.dataset.dashboardTab);
 
-      if (panel) {
-        $$("[data-dashboard-tab]").forEach((item) => {
-          item.classList.remove("active");
-        });
+      if (!panel) return;
 
-        $$("[data-dashboard-panel]").forEach((item) => {
-          item.hidden = true;
-        });
+      $$("[data-dashboard-tab]").forEach((item) => {
+        item.classList.remove("active");
+      });
 
-        tab.classList.add("active");
-        panel.hidden = false;
-      }
+      $$("[data-dashboard-panel]").forEach((item) => {
+        item.hidden = true;
+      });
+
+      tab.classList.add("active");
+      panel.hidden = false;
     });
   });
 
@@ -2058,26 +1934,17 @@ document.addEventListener("DOMContentLoaded", () => {
       byId("newsletterMessage") ||
       $(".form-message", newsletterForm);
 
-    const button =
-      $('button[type="submit"]', newsletterForm);
+    const button = $('button[type="submit"]', newsletterForm);
 
     clearMessage(message);
 
     if (!email) {
-      showMessage(
-        message,
-        "Fadlan geli email-kaaga.",
-        "error"
-      );
+      showMessage(message, "Fadlan geli email-kaaga.", "error");
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showMessage(
-        message,
-        "Fadlan geli email sax ah.",
-        "error"
-      );
+      showMessage(message, "Fadlan geli email sax ah.", "error");
       return;
     }
 
@@ -2090,9 +1957,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (error) {
         if (error.code === "23505") {
-          throw new Error(
-            "Email-kan hore ayaa loo diiwaangeliyey."
-          );
+          throw new Error("Email-kan hore ayaa loo diiwaangeliyey.");
         }
 
         throw error;
@@ -2185,9 +2050,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (event === "SIGNED_OUT") {
       currentProfile = null;
-
       setDashboardVisible(false);
-
       return;
     }
 
@@ -2213,8 +2076,6 @@ document.addEventListener("DOMContentLoaded", () => {
   async function initializeWebsite() {
     try {
       await initializeAuth();
-
-      // Approved news is public.
       await loadPublishedNews();
 
       console.log(
