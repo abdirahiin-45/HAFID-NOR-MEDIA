@@ -82,12 +82,13 @@
         </a>
 
         <div class="header-right">
+          <!-- LANGUAGE -->
           <div class="language-selector">
             <i class="fa-solid fa-globe"></i>
             <select id="languageSelect" aria-label="Choose language">
-              <option value="so"> Soomaali</option>
-              <option value="en"> English</option>
-              <option value="ar"> العربية</option>
+              <option value="so">Soomaali</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
             </select>
           </div>
 
@@ -281,6 +282,7 @@
               <span></span>
               <span data-i18n="topStories">Wararka Ugu Muhiimsan</span>
             </h2>
+
             <a href="#latest">
               <span data-i18n="allNews">Dhammaan Wararka</span>
               <i class="fa-solid fa-arrow-right"></i>
@@ -371,7 +373,9 @@
                   <h3 data-i18n="sideSports">
                     Wararka ciyaaraha iyo tartamada
                   </h3>
-                  <span class="news-date">Sports News</span>
+                  <span class="news-date" data-i18n="sportsNews"
+                    >Sports News</span
+                  >
                 </div>
               </article>
             </div>
@@ -379,7 +383,7 @@
         </div>
       </section>
 
-      <!-- LATEST NEWS: SUPABASE NEWS APPEARS HERE -->
+      <!-- LATEST NEWS -->
       <section class="latest-section" id="latest">
         <div class="container">
           <div class="section-heading">
@@ -390,9 +394,10 @@
             <a href="#latest" data-i18n="seeAll">Arag Dhammaan →</a>
           </div>
 
-          <!-- JavaScript wuxuu halkan ku soo bandhigayaa wararka Supabase -->
           <div class="news-grid" id="publishedNewsList">
-            <p class="empty-news-message">Wararka ayaa la soo rarayaa...</p>
+            <p class="empty-news-message" data-i18n="loadingNews">
+              Wararka ayaa la soo rarayaa...
+            </p>
           </div>
         </div>
       </section>
@@ -415,6 +420,7 @@
                 alt="Soomaaliya"
                 loading="lazy"
               />
+
               <div class="feature-overlay">
                 <span class="category-badge" data-i18n="somalia"
                   >SOOMAALIYA</span
@@ -489,7 +495,7 @@
 
           <div class="world-banner">
             <div>
-              <span>WORLD NEWS</span>
+              <span data-i18n="worldNews">WORLD NEWS</span>
               <h2 data-i18n="worldBannerTitle">
                 La soco dhacdooyinka caalamka
               </h2>
@@ -507,10 +513,12 @@
         <div class="container">
           <div class="section-heading">
             <h2>
-              <span></span><span data-i18n="politicsSection">Siyaasadda</span>
+              <span></span>
+              <span data-i18n="politicsSection">Siyaasadda</span>
             </h2>
             <a href="#politics" data-i18n="seeAll">Dhammaan →</a>
           </div>
+
           <div class="simple-category">
             <p data-i18n="politicsDescription">
               Halkaan waxaa lagu soo bandhigayaa wararka siyaasadda, go'aamada
@@ -525,11 +533,12 @@
         <div class="container">
           <div class="section-heading">
             <h2>
-              <span></span
-              ><span data-i18n="businessSection">Dhaqaalaha iyo Ganacsiga</span>
+              <span></span>
+              <span data-i18n="businessSection">Dhaqaalaha iyo Ganacsiga</span>
             </h2>
             <a href="#business" data-i18n="seeAll">Dhammaan →</a>
           </div>
+
           <div class="simple-category">
             <p data-i18n="businessSectionDescription">
               Wararka dhaqaalaha, ganacsiga, suuqyada iyo maalgashiga.
@@ -543,10 +552,12 @@
         <div class="container">
           <div class="section-heading">
             <h2>
-              <span></span><span data-i18n="sportsSection">Ciyaaraha</span>
+              <span></span>
+              <span data-i18n="sportsSection">Ciyaaraha</span>
             </h2>
             <a href="#sports" data-i18n="seeAll">Dhammaan →</a>
           </div>
+
           <div class="simple-category">
             <p data-i18n="sportsSectionDescription">
               Wararka kubadda cagta, ciyaaraha gudaha iyo kuwa caalamka.
@@ -560,11 +571,12 @@
         <div class="container">
           <div class="section-heading">
             <h2>
-              <span></span
-              ><span data-i18n="technologySection">Tiknoolajiyadda</span>
+              <span></span>
+              <span data-i18n="technologySection">Tiknoolajiyadda</span>
             </h2>
             <a href="#technology" data-i18n="seeAll">Dhammaan →</a>
           </div>
+
           <div class="simple-category">
             <p data-i18n="technologySectionDescription">
               Wararka tiknoolajiyadda, AI, internetka iyo hal-abuurka.
@@ -578,8 +590,8 @@
         <div class="container">
           <div class="section-heading">
             <h2>
-              <span></span
-              ><span data-i18n="videoSection">Muuqaallo iyo Barnaamijyo</span>
+              <span></span>
+              <span data-i18n="videoSection">Muuqaallo iyo Barnaamijyo</span>
             </h2>
             <a href="#" data-i18n="youtubeChannel">YouTube Channel →</a>
           </div>
@@ -660,28 +672,56 @@
       </section>
 
       <!-- NEWSLETTER -->
-      <section class="newsletter-section">
-        <div class="container newsletter-content">
-          <div>
-            <h2 data-i18n="newsletterTitle">Hel Wararkii Ugu Dambeeyay</h2>
-            <p data-i18n="newsletterDescription">
-              La soco wararka cusub ee HAFID NOR MEDIA.
-            </p>
-          </div>
+      
+<section class="newsletter-section">
+  <div class="container newsletter-content">
 
-          <form id="newsletterForm">
-            <input
-              type="email"
-              id="newsletterEmail"
-              data-i18n-placeholder="emailPlaceholder"
-              placeholder="Geli email-kaaga"
-              autocomplete="email"
-              required
-            />
-            <button type="submit" data-i18n="subscribe">Isdiiwaangeli</button>
-          </form>
-        </div>
-      </section>
+    <div>
+      <h2 data-i18n="newsletterTitle">
+        Hel Wararkii Ugu Dambeeyay
+      </h2>
+
+      <p data-i18n="newsletterDescription">
+        La soco wararka cusub ee HAFID NOR MEDIA.
+        Geli email-kaaga si aad u hesho wararka cusub.
+      </p>
+    </div>
+
+    <form id="newsletterForm" novalidate>
+
+      <input
+        type="email"
+        id="newsletterEmail"
+        name="email"
+        data-i18n-placeholder="emailPlaceholder"
+        placeholder="Geli email-kaaga"
+        autocomplete="email"
+        maxlength="254"
+        required
+        aria-label="Email-kaaga"
+      />
+
+      <button
+        type="submit"
+        id="newsletterSubmit"
+        data-i18n="subscribe"
+      >
+        Isdiiwaangeli
+      </button>
+
+      <p
+        id="newsletterMessage"
+        class="form-message"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></p>
+
+    </form>
+
+  </div>
+</section>
+
     </main>
 
     <!-- ACCOUNT MODAL -->
@@ -704,14 +744,14 @@
         <div class="auth-heading">
           <i class="fa-solid fa-newspaper"></i>
           <h2 id="authTitle">HAFID NOR MEDIA</h2>
-          <p>Ku soo dhawoow xubinnimada warbaahinta</p>
+          <p data-i18n="authWelcome">Ku soo dhawoow xubinnimada warbaahinta</p>
         </div>
 
         <!-- LOGIN FORM -->
         <form id="loginForm">
-          <h3>Gal Akoonkaaga</h3>
+          <h3 data-i18n="loginTitle">Gal Akoonkaaga</h3>
 
-          <label for="loginEmail">Email-kaaga</label>
+          <label for="loginEmail" data-i18n="emailLabel">Email-kaaga</label>
           <input
             type="email"
             id="loginEmail"
@@ -720,10 +760,11 @@
             required
           />
 
-          <label for="loginPassword">Password</label>
+          <label for="loginPassword" data-i18n="passwordLabel">Password</label>
           <input
             type="password"
             id="loginPassword"
+            data-i18n-placeholder="passwordPlaceholder"
             placeholder="Geli password-kaaga"
             autocomplete="current-password"
             required
@@ -731,16 +772,26 @@
 
           <button type="submit" class="auth-submit">
             <i class="fa-solid fa-right-to-bracket"></i>
-            Login
+            <span data-i18n="login">Login</span>
           </button>
 
-          <button type="button" id="forgotPasswordBtn" class="text-button">
+          <button
+            type="button"
+            id="forgotPasswordBtn"
+            class="text-button"
+            data-i18n="forgotPassword"
+          >
             Ma illowday password-ka?
           </button>
 
           <p>
-            Ma lihid account?
-            <button type="button" id="showRegisterBtn" class="text-button">
+            <span data-i18n="noAccount">Ma lihid account?</span>
+            <button
+              type="button"
+              id="showRegisterBtn"
+              class="text-button"
+              data-i18n="register"
+            >
               Isdiiwaangeli
             </button>
           </p>
@@ -749,20 +800,22 @@
         </form>
 
         <!-- REGISTER FORM -->
+        <
         <form id="registerForm" hidden>
-          <h3>Sameyso Account Cusub</h3>
+          <h3 data-i18n="registerTitle">Sameyso Account Cusub</h3>
 
-          <label for="registerName">Magaca oo buuxa</label>
+          <label for="registerName" data-i18n="fullName">Magaca oo buuxa</label>
           <input
             type="text"
             id="registerName"
+            data-i18n-placeholder="namePlaceholder"
             placeholder="Magacaaga"
             autocomplete="name"
             minlength="3"
             required
           />
 
-          <label for="registerEmail">Email</label>
+          <label for="registerEmail" data-i18n="email">Email</label>
           <input
             type="email"
             id="registerEmail"
@@ -771,20 +824,26 @@
             required
           />
 
-          <label for="registerPassword">Password</label>
+          <label for="registerPassword" data-i18n="passwordLabel"
+            >Password</label
+          >
           <input
             type="password"
             id="registerPassword"
+            data-i18n-placeholder="createPassword"
             placeholder="Sameyso password"
             minlength="8"
             autocomplete="new-password"
             required
           />
 
-          <label for="registerConfirmPassword">Xaqiiji Password</label>
+          <label for="registerConfirmPassword" data-i18n="confirmPassword">
+            Xaqiiji Password
+          </label>
           <input
             type="password"
             id="registerConfirmPassword"
+            data-i18n-placeholder="repeatPassword"
             placeholder="Ku celi password-ka"
             minlength="8"
             autocomplete="new-password"
@@ -793,22 +852,32 @@
 
           <p class="registration-role-note">
             <i class="fa-solid fa-book-open"></i>
-            Nooca akoonka: Member / Xubin
+            <span data-i18n="memberAccount">Nooca akoonka: Member / Xubin</span>
           </p>
 
-          <button type="submit" class="auth-submit">
+          <button type="submit" id="registerSubmit" class="auth-submit">
             <i class="fa-solid fa-user-plus"></i>
-            Sameyso Account
+            <span data-i18n="createAccount">Sameyso Account</span>
           </button>
 
           <p>
-            Account ma leedahay?
-            <button type="button" id="showLoginBtn" class="text-button">
+            <span data-i18n="alreadyAccount">Account ma leedahay?</span>
+            <button
+              type="button"
+              id="showLoginBtn"
+              class="text-button"
+              data-i18n="login"
+            >
               Login
             </button>
           </p>
 
-          <p id="registerMessage" class="form-message" aria-live="polite"></p>
+          <p
+            id="registerMessage"
+            class="form-message"
+            aria-live="polite"
+            role="status"
+          ></p>
         </form>
       </div>
     </div>
@@ -819,13 +888,15 @@
         <div class="dashboard-header">
           <div>
             <span class="dashboard-label">HAFID NOR MEDIA</span>
-            <h2>Member Dashboard</h2>
-            <p>Ku soo dhawoow xubinnimada HAFID NOR MEDIA</p>
+            <h2 data-i18n="memberDashboard">Member Dashboard</h2>
+            <p data-i18n="dashboardWelcome">
+              Ku soo dhawoow xubinnimada HAFID NOR MEDIA
+            </p>
           </div>
 
           <button type="button" id="logoutBtn" class="logout-btn">
             <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
+            <span data-i18n="logout">Logout</span>
           </button>
         </div>
 
@@ -834,17 +905,22 @@
           <div class="owner-publish-header">
             <div>
               <span class="owner-label">OWNER DASHBOARD</span>
-              <h2>Ku dar War Cusub</h2>
-              <p>Halkan waxaad ku soo gelin kartaa wararka HAFID NOR MEDIA.</p>
+              <h2 data-i18n="addNews">Ku dar War Cusub</h2>
+              <p data-i18n="publisherDescription">
+                Halkan waxaad ku soo gelin kartaa wararka HAFID NOR MEDIA.
+              </p>
             </div>
           </div>
 
           <form id="ownerNewsForm" class="owner-news-form">
             <div class="form-group">
-              <label for="newsTitle">Cinwaanka Warka</label>
+              <label for="newsTitle" data-i18n="newsTitle"
+                >Cinwaanka Warka</label
+              >
               <input
                 type="text"
                 id="newsTitle"
+                data-i18n-placeholder="newsTitlePlaceholder"
                 placeholder="Geli cinwaanka warka"
                 maxlength="200"
                 required
@@ -853,31 +929,52 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label for="newsCategory">Qaybta Warka</label>
+                <label for="newsCategory" data-i18n="newsCategory"
+                  >Qaybta Warka</label
+                >
                 <select id="newsCategory" required>
-                  <option value="">Dooro qaybta</option>
-                  <option value="Siyaasadda">Siyaasadda</option>
-                  <option value="Dhaqaalaha">Dhaqaalaha</option>
-                  <option value="Ciyaaraha">Ciyaaraha</option>
-                  <option value="Bulshada">Bulshada</option>
-                  <option value="Caalamka">Caalamka</option>
-                  <option value="Tiknoolajiyadda">Tiknoolajiyadda</option>
-                  <option value="Soomaaliya">Soomaaliya</option>
+                  <option value="" data-i18n="chooseCategory">
+                    Dooro qaybta
+                  </option>
+                  <option value="Siyaasadda" data-i18n="politics">
+                    Siyaasadda
+                  </option>
+                  <option value="Dhaqaalaha" data-i18n="business">
+                    Dhaqaalaha
+                  </option>
+                  <option value="Ciyaaraha" data-i18n="sports">
+                    Ciyaaraha
+                  </option>
+                  <option value="Bulshada" data-i18n="community">
+                    Bulshada
+                  </option>
+                  <option value="Caalamka" data-i18n="world">Caalamka</option>
+                  <option value="Tiknoolajiyadda" data-i18n="technology">
+                    Tiknoolajiyadda
+                  </option>
+                  <option value="Soomaaliya" data-i18n="somalia">
+                    Soomaaliya
+                  </option>
                 </select>
               </div>
 
               <div class="form-group">
-                <label for="newsLocation">Goobta</label>
+                <label for="newsLocation" data-i18n="newsLocation"
+                  >Goobta</label
+                >
                 <input
                   type="text"
                   id="newsLocation"
+                  data-i18n-placeholder="locationPlaceholder"
                   placeholder="Tusaale: Muqdisho"
                 />
               </div>
             </div>
 
             <div class="form-group">
-              <label for="newsImageFile">Sawirka Warka</label>
+              <label for="newsImageFile" data-i18n="newsImage"
+                >Sawirka Warka</label
+              >
               <input type="file" id="newsImageFile" accept="image/*" />
               <img
                 id="newsImagePreview"
@@ -888,17 +985,22 @@
             </div>
 
             <div class="form-group">
-              <label for="newsContent">Qoraalka Warka</label>
+              <label for="newsContent" data-i18n="newsContent"
+                >Qoraalka Warka</label
+              >
               <textarea
                 id="newsContent"
                 rows="10"
+                data-i18n-placeholder="newsContentPlaceholder"
                 placeholder="Halkan ku qor warka oo dhan..."
                 required
               ></textarea>
             </div>
 
             <div class="form-group">
-              <label for="newsSource">Isha Warka (Ikhtiyaari)</label>
+              <label for="newsSource" data-i18n="newsSource"
+                >Isha Warka (Ikhtiyaari)</label
+              >
               <input
                 type="url"
                 id="newsSource"
@@ -908,7 +1010,7 @@
 
             <button type="submit" id="publishNewsBtn">
               <i class="fa-solid fa-paper-plane"></i>
-              Daabac Warka
+              <span data-i18n="publishNews">Daabac Warka</span>
             </button>
 
             <p id="ownerNewsMessage" role="status" aria-live="polite"></p>
@@ -936,7 +1038,7 @@
             data-dashboard-tab="publishedNews"
           >
             <i class="fa-solid fa-newspaper"></i>
-            Wararka Website-ka
+            <span data-i18n="websiteNews">Wararka Website-ka</span>
           </button>
 
           <button
@@ -945,7 +1047,7 @@
             data-dashboard-tab="profile"
           >
             <i class="fa-solid fa-user"></i>
-            Profile-kayga
+            <span data-i18n="myProfile">Profile-kayga</span>
           </button>
         </div>
 
@@ -954,17 +1056,19 @@
           <div class="dashboard-panel-heading">
             <h3>
               <i class="fa-solid fa-newspaper"></i>
-              Wararka HAFID NOR MEDIA
+              <span data-i18n="hafidNews">Wararka HAFID NOR MEDIA</span>
             </h3>
-            <p>
+
+            <p data-i18n="dashboardNewsDescription">
               Halkaan waxaad ka akhrisan kartaa dhammaan wararka maamulka HAFID
               NOR MEDIA soo geliyey.
             </p>
           </div>
 
-          <!-- ID gaar ah: homepage ID-ga lama wadaagayo -->
           <div id="dashboardPublishedNewsList">
-            <p class="empty-news-message">Wararka ayaa la soo rarayaa...</p>
+            <p class="empty-news-message" data-i18n="loadingNews">
+              Wararka ayaa la soo rarayaa...
+            </p>
           </div>
         </div>
 
@@ -973,20 +1077,31 @@
           <div class="dashboard-panel-heading">
             <h3>
               <i class="fa-solid fa-user-pen"></i>
-              Xogta Xubinta
+              <span data-i18n="memberInformation">Xogta Xubinta</span>
             </h3>
-            <p>Macluumaadka akoonkaaga HAFID NOR MEDIA.</p>
+
+            <p data-i18n="profileDescription">
+              Macluumaadka akoonkaaga HAFID NOR MEDIA.
+            </p>
           </div>
 
           <div class="profile-details">
-            <p><strong>Magaca:</strong> <span id="profileName">-</span></p>
-            <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
             <p>
-              <strong>Nooca xubinta:</strong>
+              <strong data-i18n="name">Magaca:</strong>
+              <span id="profileName">-</span>
+            </p>
+            <p>
+              <strong data-i18n="email">Email:</strong>
+              <span id="profileEmail">-</span>
+            </p>
+            <p>
+              <strong data-i18n="memberType">Nooca xubinta:</strong>
               <span id="profileType">Member / Xubin</span>
             </p>
             <p>
-              <strong>Taariikhda diiwaangelinta:</strong>
+              <strong data-i18n="registrationDate"
+                >Taariikhda diiwaangelinta:</strong
+              >
               <span id="profileDate">-</span>
             </p>
           </div>
@@ -1003,6 +1118,7 @@
               <div class="logo-icon">
                 <i class="fa-solid fa-newspaper"></i>
               </div>
+
               <div class="logo-text">
                 <h2>HAFID NOR <span>MEDIA</span></h2>
                 <p data-i18n="tagline">XOG • XAQIIQO • WARAR</p>
@@ -1052,12 +1168,15 @@
           <div class="footer-links">
             <h3 data-i18n="contact">La Xiriir</h3>
             <a href="mailto:contact@example.com">
-              <i class="fa-regular fa-envelope"></i> Email
+              <i class="fa-regular fa-envelope"></i>
+              <span data-i18n="email">Email</span>
             </a>
+
             <a href="#about">
               <i class="fa-solid fa-location-dot"></i>
               <span data-i18n="location">Muqdisho, Soomaaliya</span>
             </a>
+
             <a href="#">Facebook</a>
             <a href="#">YouTube</a>
           </div>
@@ -1070,6 +1189,7 @@
               >Xuquuqda oo dhan way dhowran tahay.</span
             >
           </p>
+
           <a href="#home" data-i18n="backTop">Kor u noqo ↑</a>
         </div>
       </div>

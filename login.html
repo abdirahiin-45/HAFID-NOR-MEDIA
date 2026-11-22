@@ -1,163 +1,905 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="so" dir="ltr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#102b46" />
+    <meta name="robots" content="noindex,nofollow" />
 
-  <title>Login | HAFID NOR MEDIA</title>
-  <meta name="description" content="Gal akoonkaaga HAFID NOR MEDIA.">
+    <title>Login | HAFID NOR MEDIA</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<body class="login-page">
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <main class="login-wrapper">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
-    <section class="login-card">
+    <style>
+      :root {
+        --primary: #102b46;
+        --orange: #f47b35;
+        --text: #172b40;
+        --muted: #718096;
+        --border: #e7edf3;
+        --success: #159b68;
+        --danger: #dc3545;
+        --radius: 22px;
+      }
 
-      <a href="index.html" class="login-logo">
-        <span class="login-logo-icon">
-          <i class="fas fa-newspaper"></i>
-        </span>
-        <span>HAFID NOR <strong>MEDIA</strong></span>
-      </a>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-      <div class="login-heading">
-        <span class="login-tag">KU SOO DHAWOOW</span>
-        <h1>Ku soo dhawoow!</h1>
-        <p>Gal akoonkaaga si aad u isticmaasho adeegyada HAFID NOR MEDIA.</p>
-      </div>
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 16px;
 
-      <form id="loginForm">
+        font-family: "DM Sans", sans-serif;
 
-        <div class="login-field">
-          <label for="loginEmail">Email-kaaga</label>
-          <div class="login-input">
-            <i class="fas fa-envelope"></i>
-            <input
-              type="email"
-              id="loginEmail"
-              placeholder="example@email.com"
-              autocomplete="email"
-              required>
+        background:
+          radial-gradient(circle at 15% 20%, #f47b3530, transparent 35%),
+          radial-gradient(circle at 85% 80%, #3287bd35, transparent 35%),
+          linear-gradient(135deg, #091a2b, #102b46 55%, #183d5c);
+      }
+
+      .wrapper {
+        width: 100%;
+        max-width: 460px;
+        animation: fadeUp 0.6s ease;
+      }
+
+      .card {
+        position: relative;
+        overflow: hidden;
+        padding: 40px;
+
+        background: #fff;
+        border-radius: var(--radius);
+        box-shadow: 0 25px 70px #0004;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+
+        background: linear-gradient(
+          90deg,
+          var(--orange),
+          #ffb16e,
+          var(--orange)
+        );
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+
+        margin-bottom: 32px;
+
+        text-decoration: none;
+        color: var(--primary);
+
+        font-family: Manrope, sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .logo strong {
+        color: var(--orange);
+      }
+
+      .logo-icon {
+        width: 47px;
+        height: 47px;
+
+        display: grid;
+        place-items: center;
+
+        background: var(--primary);
+        color: white;
+        border-radius: 14px;
+      }
+
+      .heading {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 8px 14px;
+        margin-bottom: 16px;
+
+        border-radius: 30px;
+        background: #f47b3518;
+        color: #e66520;
+
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      .heading h1 {
+        margin-bottom: 10px;
+
+        font-family: Manrope, sans-serif;
+        font-size: 29px;
+        color: var(--primary);
+      }
+
+      .heading p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      .field {
+        margin-bottom: 21px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 9px;
+
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .input-box {
+        height: 54px;
+
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 0 15px;
+
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        background: #f8fafc;
+
+        transition: 0.25s;
+      }
+
+      .input-box:focus-within {
+        border-color: var(--orange);
+        background: white;
+        box-shadow: 0 0 0 4px #f47b3518;
+      }
+
+      .input-box > i {
+        color: #8798a9;
+      }
+
+      .input-box input {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+
+        border: none;
+        outline: none;
+        background: transparent;
+
+        color: var(--primary);
+        font-family: inherit;
+        font-size: 13px;
+      }
+
+      .toggle {
+        padding: 8px;
+        border: none;
+        background: transparent;
+
+        color: #8292a3;
+        cursor: pointer;
+      }
+
+      .options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+
+        margin: 5px 0 23px;
+        font-size: 12px;
+      }
+
+      .remember {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .remember input {
+        accent-color: var(--orange);
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .forgot {
+        color: #e66520;
+        font-weight: 700;
+      }
+
+      .submit {
+        width: 100%;
+        min-height: 54px;
+
+        border: none;
+        border-radius: 12px;
+
+        background: linear-gradient(135deg, var(--orange), #ef6c27);
+        color: white;
+
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 800;
+
+        cursor: pointer;
+        box-shadow: 0 9px 20px #f47b3540;
+
+        transition: 0.25s;
+      }
+
+      .submit:hover {
+        transform: translateY(-2px);
+      }
+
+      .submit:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .message {
+        min-height: 25px;
+        margin-top: 14px;
+
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.7;
+      }
+
+      .message.error {
+        color: var(--danger);
+      }
+
+      .message.success {
+        color: var(--success);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        margin: 24px 0;
+
+        color: #a2afbd;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        height: 1px;
+        background: var(--border);
+        flex: 1;
+      }
+
+      .register {
+        margin-bottom: 24px;
+
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .register a {
+        color: #e66520;
+        font-weight: 800;
+      }
+
+      .back {
+        display: block;
+        text-align: center;
+
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .security {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+
+        padding-top: 20px;
+        margin-top: 28px;
+
+        border-top: 1px solid var(--border);
+
+        color: #8997a5;
+        font-size: 10px;
+      }
+
+      .security i {
+        color: var(--success);
+      }
+
+      footer {
+        margin-top: 22px;
+
+        color: #ffffffa8;
+        text-align: center;
+        font-size: 11px;
+      }
+
+      footer strong {
+        color: white;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(25px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .card {
+          padding: 32px 22px;
+        }
+
+        .heading h1 {
+          font-size: 25px;
+        }
+
+        .logo {
+          font-size: 17px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .text-button {
+        border: none;
+        background: none;
+        color: #e66520;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="wrapper">
+      <section class="card">
+        <a href="index.html" class="logo">
+          <span class="logo-icon">
+            <i class="fas fa-newspaper"></i>
+          </span>
+
+          <span> HAFID NOR <strong>MEDIA</strong> </span>
+        </a>
+
+        <div class="heading">
+          <span class="tag">
+            <i class="fas fa-shield-halved"></i>
+            MADASHA WARARKA
+          </span>
+
+          <h1>Ku soo dhawoow!</h1>
+
+          <p>
+            Gal akoonkaaga si aad ula socoto wararkii ugu dambeeyey ee HAFID NOR
+            MEDIA.
+          </p>
+        </div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="email">Email-kaaga</label>
+
+            <div class="input-box">
+              <i class="fas fa-envelope"></i>
+
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="example@email.com"
+                autocomplete="username"
+                required
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="login-field">
-          <label for="loginPassword">Furaha sirta ah</label>
+          <div class="field">
+            <label for="password">Password-kaaga</label>
 
-          <div class="login-input">
-            <i class="fas fa-lock"></i>
+            <div class="input-box">
+              <i class="fas fa-lock"></i>
 
-            <input
-              type="password"
-              id="loginPassword"
-              placeholder="Geli password-kaaga"
-              autocomplete="current-password"
-              required>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Geli password-kaaga"
+                autocomplete="current-password"
+                required
+              />
 
-            <button
-              type="button"
-              class="password-toggle"
-              id="togglePassword"
-              aria-label="Muuji password">
-              <i class="fas fa-eye"></i>
-            </button>
+              <button
+                type="button"
+                class="toggle"
+                id="togglePassword"
+                aria-label="Show password"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
           </div>
+
+          <div class="options">
+            <label class="remember">
+              <input type="checkbox" id="rememberMe" checked />
+              I xasuuso
+            </label>
+
+            <a href="#" class="forgot" id="forgotPassword">
+              Forgot Password?
+            </a>
+          </div>
+
+          <button type="submit" class="submit" id="loginButton">
+            <span id="buttonText">Soo gal</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+
+          <p class="message" id="message" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="divider">AMA</div>
+
+        <div class="register">
+          Akoon ma lihid?
+          <a href="register.html">Sameyso akoon cusub</a>
         </div>
 
-        <div class="login-options">
+        <a href="index.html" class="back">
+          <i class="fas fa-arrow-left"></i>
+          Ku noqo bogga hore
+        </a>
 
-          <label class="remember-option">
-            <input type="checkbox" id="rememberMe">
-            <span>I xasuuso</span>
-          </label>
-
-          <a href="#" id="forgotPasswordBtn">
-            Ma illowday password-ka?
-          </a>
-
+        <div class="security">
+          <i class="fas fa-shield-halved"></i>
+          <span> Macluumaadkaaga si ammaan ah ayaa loo ilaaliyaa. </span>
         </div>
+      </section>
 
-        <button type="submit" class="login-submit" id="loginSubmit">
-          <span>Soo gal</span>
-          <i class="fas fa-arrow-right"></i>
-        </button>
+      <footer>
+        © <span id="year"></span>
+        <strong>HAFID NOR MEDIA.</strong>
+        Dhammaan xuquuqdu way dhowran tahay.
+      </footer>
+    </main>
 
-        <p id="loginMessage" class="form-message" role="status"></p>
+    <!-- SUPABASE LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-      </form>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        "use strict";
 
-      <div class="login-divider">
-        <span>AMA</span>
-      </div>
+        /* =========================================
+       1. SUPABASE CONFIGURATION
+    ========================================= */
 
-      <div class="login-register">
-        Akoon ma lihid?
-        <a href="register.html">Sameyso akoon cusub</a>
-      </div>
+        const SUPABASE_URL = "https://yracqbffyieivvnhbfgj.supabase.co";
 
-      <a href="index.html" class="back-home">
-        <i class="fas fa-arrow-left"></i>
-        Ku noqo bogga hore
-      </a>
+        const SUPABASE_KEY = "sb_publishable_CfxX2L9_QOgJX1Y6WQ3yZA_KmA62nG_";
 
-      <div class="login-security">
-        <i class="fas fa-shield-halved"></i>
-        <span>Macluumaadkaaga si ammaan ah ayaa loo ilaaliyaa.</span>
-      </div>
+        const PAGE_URLS = {
+          owner: "admin.html",
+          admin: "admin.html",
+          editor: "admin.html",
+          writer: "admin.html",
+          reader: "index.html",
+        };
 
-    </section>
+        /* =========================================
+       2. HTML ELEMENTS
+    ========================================= */
 
-    <footer class="login-footer">
-      © <span id="loginYear"></span> HAFID NOR MEDIA.
-      Dhammaan xuquuqdu way dhowran tahay.
-    </footer>
+        const $ = (id) => document.getElementById(id);
 
-  </main>
+        const form = $("loginForm");
+        const emailInput = $("email");
+        const passwordInput = $("password");
 
-  <!-- Supabase waa inuu ka horreeyaa script.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
+        const button = $("loginButton");
+        const buttonText = $("buttonText");
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
+        const message = $("message");
+        const rememberMe = $("rememberMe");
 
-      const togglePassword =
-        document.getElementById("togglePassword");
+        const togglePassword = $("togglePassword");
+        const forgotPassword = $("forgotPassword");
 
-      const passwordInput =
-        document.getElementById("loginPassword");
+        $("year").textContent = new Date().getFullYear();
 
-      const loginYear =
-        document.getElementById("loginYear");
+        /* =========================================
+       3. MESSAGE FUNCTION
+    ========================================= */
 
-      if (togglePassword && passwordInput) {
-        togglePassword.addEventListener("click", function () {
+        function showMessage(text, type = "") {
+          message.textContent = text;
 
-          const isPassword =
-            passwordInput.type === "password";
+          message.className = "message " + type;
+        }
 
-          passwordInput.type =
-            isPassword ? "text" : "password";
+        /* =========================================
+       4. BUTTON LOADING
+    ========================================= */
 
-          togglePassword.innerHTML = isPassword
+        function loading(active) {
+          button.disabled = active;
+
+          buttonText.textContent = active ? "Waa la hubinayaa..." : "Soo gal";
+        }
+
+        /* =========================================
+       5. CHECK SUPABASE LIBRARY
+    ========================================= */
+
+        if (!window.supabase) {
+          showMessage("Supabase lama soo dejin. Hubi internet-kaaga.", "error");
+
+          button.disabled = true;
+
+          return;
+        }
+
+        /* =========================================
+       6. SESSION STORAGE
+    ========================================= */
+
+        const storage = {
+          getItem(key) {
+            return localStorage.getItem(key) ?? sessionStorage.getItem(key);
+          },
+
+          setItem(key, value) {
+            if (rememberMe.checked) {
+              localStorage.setItem(key, value);
+              sessionStorage.removeItem(key);
+            } else {
+              sessionStorage.setItem(key, value);
+              localStorage.removeItem(key);
+            }
+          },
+
+          removeItem(key) {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+          },
+        };
+
+        /* =========================================
+       7. CREATE SUPABASE CLIENT
+    ========================================= */
+
+        let supabaseClient;
+
+        try {
+          supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY,
+            {
+              auth: {
+                storage: storage,
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true,
+              },
+            },
+          );
+        } catch (error) {
+          console.error("Supabase initialization:", error);
+
+          showMessage("Supabase connection lama bilaabi karin.", "error");
+
+          button.disabled = true;
+
+          return;
+        }
+
+        /* =========================================
+       8. SHOW / HIDE PASSWORD
+    ========================================= */
+
+        togglePassword.addEventListener("click", () => {
+          const isHidden = passwordInput.type === "password";
+
+          passwordInput.type = isHidden ? "text" : "password";
+
+          togglePassword.innerHTML = isHidden
             ? '<i class="fas fa-eye-slash"></i>'
             : '<i class="fas fa-eye"></i>';
 
+          togglePassword.setAttribute(
+            "aria-label",
+            isHidden ? "Hide password" : "Show password",
+          );
         });
-      }
 
-      if (loginYear) {
-        loginYear.textContent = new Date().getFullYear();
-      }
+        /* =========================================
+       9. PROFILE AND ROLE REDIRECT
+    ========================================= */
 
-    });
-  </script>
+        async function redirectUser(user) {
+          if (!user || !user.id) {
+            showMessage("Macluumaadka user-ka lama helin.", "error");
 
-</body>
+            return false;
+          }
+
+          const { data: profile, error } = await supabaseClient
+            .from("profiles")
+            .select("id, full_name, role")
+            .eq("id", user.id)
+            .maybeSingle();
+
+          if (error) {
+            console.error("Profile error:", error);
+
+            showMessage(
+              "Profile-ka lama akhrin karin. Hubi RLS policy-ga profiles.",
+              "error",
+            );
+
+            return false;
+          }
+
+          if (!profile) {
+            showMessage(
+              "Profile-ka akoonkaaga lama helin. Hubi database trigger-ka.",
+              "error",
+            );
+
+            return false;
+          }
+
+          const role = String(profile.role || "reader")
+            .trim()
+            .toLowerCase();
+
+          const destination = PAGE_URLS[role];
+
+          if (!destination) {
+            showMessage("Role-ka akoonka lama aqoonsan: " + role, "error");
+
+            return false;
+          }
+
+          showMessage(
+            "Login waa guulaystay! Waa lagu wareejinayaa...",
+            "success",
+          );
+
+          window.location.replace(destination);
+
+          return true;
+        }
+
+        /* =========================================
+       10. LOGIN SYSTEM
+    ========================================= */
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const email = emailInput.value.trim().toLowerCase();
+
+          const password = passwordInput.value;
+
+          if (!email || !password) {
+            showMessage("Fadlan geli email iyo password.", "error");
+
+            return;
+          }
+
+          if (!emailInput.checkValidity()) {
+            showMessage("Fadlan geli email sax ah.", "error");
+
+            emailInput.focus();
+
+            return;
+          }
+
+          loading(true);
+          showMessage("");
+
+          try {
+            const { data, error } =
+              await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password,
+              });
+
+            if (error) {
+              console.error("Login error:", error);
+
+              const errorText = error.message.toLowerCase();
+
+              if (
+                errorText.includes("not confirmed") ||
+                errorText.includes("email not confirmed")
+              ) {
+                showMessage(
+                  "Email-kaaga weli lama xaqiijin. Hubi inbox-kaaga.",
+                  "error",
+                );
+              } else if (
+                errorText.includes("invalid login") ||
+                errorText.includes("invalid credentials")
+              ) {
+                showMessage("Email ama password khaldan.", "error");
+              } else if (
+                errorText.includes("rate limit") ||
+                errorText.includes("too many requests")
+              ) {
+                showMessage(
+                  "Codsiyo badan ayaa la diray. Sug xoogaa kadib isku day.",
+                  "error",
+                );
+              } else {
+                showMessage(error.message, "error");
+              }
+
+              return;
+            }
+
+            if (!data || !data.user) {
+              showMessage("User lama helin.", "error");
+
+              return;
+            }
+
+            await redirectUser(data.user);
+          } catch (error) {
+            console.error("Login system error:", error);
+
+            showMessage(
+              "Server ama internet error. Mar kale isku day.",
+              "error",
+            );
+          } finally {
+            loading(false);
+          }
+        });
+
+        /* =========================================
+       11. FORGOT PASSWORD
+    ========================================= */
+
+        forgotPassword.addEventListener("click", async (event) => {
+          event.preventDefault();
+
+          const email = emailInput.value.trim().toLowerCase();
+
+          if (!email || !emailInput.checkValidity()) {
+            showMessage("Marka hore geli email sax ah.", "error");
+
+            emailInput.focus();
+
+            return;
+          }
+
+          forgotPassword.style.pointerEvents = "none";
+
+          showMessage("Reset link waa la dirayaa...");
+
+          try {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(
+              email,
+              {
+                redirectTo: window.location.origin + "/reset-password.html",
+              },
+            );
+
+            if (error) {
+              throw error;
+            }
+
+            showMessage(
+              "Haddii email-ku akoon leeyahay, reset link ayaa loo diray.",
+              "success",
+            );
+          } catch (error) {
+            console.error("Password reset error:", error);
+
+            showMessage(error.message || "Password reset ma shaqayn.", "error");
+          } finally {
+            forgotPassword.style.pointerEvents = "";
+          }
+        });
+
+        /* =========================================
+       12. CHECK EXISTING SESSION
+    ========================================= */
+
+        async function checkSession() {
+          try {
+            const { data, error } = await supabaseClient.auth.getSession();
+
+            if (error) {
+              throw error;
+            }
+
+            if (data.session && data.session.user) {
+              loading(true);
+
+              await redirectUser(data.session.user);
+            }
+          } catch (error) {
+            console.error("Session checking error:", error);
+          }
+        }
+
+        /* =========================================
+       13. INITIALIZE LOGIN PAGE
+    ========================================= */
+
+        checkSession();
+
+        console.log("HAFID NOR MEDIA — Login system loaded successfully.");
+      });
+    </script>
+  </body>
 </html>

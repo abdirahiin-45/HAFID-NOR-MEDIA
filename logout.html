@@ -6,12 +6,683 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Logout | HAFID NOR MEDIA</title>
-  <meta name="description" content="Waxaad ka baxday akoonkaaga HAFID NOR MEDIA.">
+
+  <meta name="description" content="Waxaad si ammaan ah uga baxday akoonkaaga HAFID NOR MEDIA.">
+
+  <meta name="theme-color" content="#102b46">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <link rel="stylesheet" href="style.css">
+  <style>
 
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+/* =========================================================
+   HAFID NOR MEDIA
+   LOGOUT PAGE - FULL PROFESSIONAL CSS
+   VERSION 7.1
+========================================================= */
+
+/* RESET */
+.logout-page,
+.logout-page * {
+  box-sizing: border-box;
+}
+
+.logout-page {
+  --primary: #102b46;
+  --secondary: #183d5c;
+  --orange: #f47b35;
+  --orange-dark: #e96a28;
+  --success: #159b68;
+  --text: #172b40;
+  --muted: #718096;
+  --border: #e7edf3;
+
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 40px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+
+  position: relative;
+  overflow-x: hidden;
+
+  background:
+    radial-gradient(
+      circle at 12% 15%,
+      rgba(244, 123, 53, 0.19),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 90% 85%,
+      rgba(51, 135, 190, 0.22),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #091a2b 0%,
+      #102b46 55%,
+      #183d5c 100%
+    );
+}
+
+.logout-page::before,
+.logout-page::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.logout-page::before {
+  width: 350px;
+  height: 350px;
+  top: -150px;
+  right: -100px;
+  background: rgba(244, 123, 53, 0.09);
+  filter: blur(35px);
+}
+
+.logout-page::after {
+  width: 400px;
+  height: 400px;
+  bottom: -190px;
+  left: -130px;
+  background: rgba(68, 145, 198, 0.12);
+  filter: blur(40px);
+}
+
+/* MAIN WRAPPER */
+.logout-wrapper {
+  width: 100%;
+  max-width: 490px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: relative;
+  z-index: 2;
+
+  animation: logoutFadeUp 0.8s ease both;
+}
+
+/* MAIN CARD */
+.logout-card {
+  width: 100%;
+  padding: 43px 42px 35px;
+
+  background: rgba(255, 255, 255, 0.98);
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 23px;
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.22);
+
+  text-align: center;
+
+  position: relative;
+  overflow: hidden;
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.logout-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 5px;
+
+  background: linear-gradient(
+    90deg,
+    #f47b35,
+    #ffbd8b,
+    #f47b35
+  );
+}
+
+/* LOGO */
+.logout-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  margin-bottom: 42px;
+
+  color: var(--primary);
+  text-decoration: none;
+
+  font-family: 'Manrope', sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+
+  transition: 0.3s ease;
+}
+
+.logout-logo strong {
+  color: var(--orange);
+}
+
+.logout-logo-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  color: #fff;
+  font-size: 21px;
+
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    #24577e
+  );
+
+  box-shadow:
+    0 8px 18px rgba(16, 43, 70, 0.20);
+
+  transition: 0.3s ease;
+}
+
+.logout-logo:hover .logout-logo-icon {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+/* SUCCESS ICON */
+.logout-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 23px;
+}
+
+.logout-success-circle {
+  width: 90px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+  font-size: 35px;
+
+  background: linear-gradient(
+    135deg,
+    #20b77c,
+    #119765
+  );
+
+  box-shadow:
+    0 12px 28px rgba(21, 155, 104, 0.25);
+
+  animation: logoutSuccess 0.8s ease both;
+}
+
+/* STATUS TAG */
+.logout-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+  padding: 9px 16px;
+
+  border-radius: 30px;
+
+  background: rgba(21, 155, 104, 0.10);
+  color: var(--success);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+
+  margin-bottom: 20px;
+}
+
+/* HEADING */
+.logout-heading {
+  margin-bottom: 28px;
+}
+
+.logout-heading h1 {
+  color: var(--primary);
+
+  font-family: 'Manrope', sans-serif;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: -0.8px;
+
+  margin-bottom: 13px;
+}
+
+.logout-heading p {
+  color: var(--muted);
+
+  font-size: 13px;
+  line-height: 1.9;
+  font-weight: 400;
+}
+
+.logout-heading p strong {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+/* INFORMATION BOX */
+.logout-info {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 13px;
+  padding: 17px;
+
+  margin-bottom: 25px;
+
+  border-radius: 13px;
+
+  background: #f3f8fc;
+  border: 1px solid #e6eef5;
+
+  text-align: left;
+
+  transition: 0.3s ease;
+}
+
+.logout-info:hover {
+  background: #edf5fb;
+  border-color: #d6e5f1;
+}
+
+/* INFO ICON */
+.logout-info-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: rgba(21, 155, 104, 0.10);
+  color: var(--success);
+
+  font-size: 17px;
+}
+
+/* INFO TEXT */
+.logout-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.logout-info-text strong {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.logout-info-text span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* BUTTONS */
+.logout-buttons {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* LOGIN BUTTON */
+.logout-login-btn {
+  width: 100%;
+  min-height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+  padding: 14px 20px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    var(--orange),
+    var(--orange-dark)
+  );
+
+  color: #fff;
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  box-shadow:
+    0 9px 20px rgba(244, 123, 53, 0.23);
+
+  transition: all 0.3s ease;
+}
+
+.logout-login-btn:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 13px 25px rgba(244, 123, 53, 0.35);
+}
+
+.logout-login-btn:active {
+  transform: translateY(0);
+}
+
+/* LOGIN ARROW */
+.logout-arrow {
+  margin-left: auto;
+  transition: transform 0.25s ease;
+}
+
+.logout-login-btn:hover .logout-arrow {
+  transform: translateX(5px);
+}
+
+/* HOME BUTTON */
+.logout-home-btn {
+  width: 100%;
+  min-height: 53px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+  padding: 13px 20px;
+
+  border-radius: 12px;
+
+  background: #f1f5f9;
+  border: 1px solid #e5ebf1;
+
+  color: var(--primary);
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  transition: all 0.3s ease;
+}
+
+.logout-home-btn:hover {
+  background: #e7edf4;
+  border-color: #cbd8e4;
+  transform: translateY(-2px);
+}
+
+/* SECURITY FOOTER */
+.logout-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding-top: 22px;
+  margin-top: 26px;
+
+  border-top: 1px solid #edf0f4;
+
+  color: #8997a5;
+
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.logout-security i {
+  color: var(--success);
+  font-size: 14px;
+}
+
+/* COPYRIGHT */
+.logout-footer {
+  width: 100%;
+
+  margin-top: 25px;
+
+  text-align: center;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.logout-footer strong {
+  color: #fff;
+  font-weight: 800;
+}
+
+/* FOCUS */
+.logout-page a:focus-visible {
+  outline: 3px solid rgba(244, 123, 53, 0.65);
+  outline-offset: 4px;
+}
+
+/* ANIMATIONS */
+@keyframes logoutFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoutSuccess {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  70% {
+    transform: scale(1.12);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+  .logout-page {
+    padding: 35px 18px;
+  }
+
+  .logout-card {
+    padding: 38px 32px 30px;
+  }
+
+  .logout-heading h1 {
+    font-size: 25px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .logout-page {
+    min-height: 100vh;
+    padding: 25px 14px;
+  }
+
+  .logout-wrapper {
+    max-width: 100%;
+  }
+
+  .logout-card {
+    padding: 32px 22px 26px;
+    border-radius: 19px;
+  }
+
+  .logout-logo {
+    font-size: 18px;
+    margin-bottom: 35px;
+  }
+
+  .logout-logo-icon {
+    width: 43px;
+    height: 43px;
+    font-size: 19px;
+  }
+
+  .logout-success-circle {
+    width: 78px;
+    height: 78px;
+    font-size: 29px;
+  }
+
+  .logout-heading h1 {
+    font-size: 23px;
+  }
+
+  .logout-heading p {
+    font-size: 12px;
+  }
+
+  .logout-info {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .logout-info-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+
+  .logout-info-text strong {
+    font-size: 11px;
+  }
+
+  .logout-info-text span {
+    font-size: 10px;
+  }
+
+  .logout-login-btn {
+    min-height: 53px;
+    font-size: 12px;
+  }
+
+  .logout-home-btn {
+    min-height: 51px;
+    font-size: 11px;
+  }
+
+  .logout-security {
+    font-size: 9px;
+  }
+
+  .logout-footer {
+    font-size: 10px;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 350px) {
+  .logout-page {
+    padding: 20px 11px;
+  }
+
+  .logout-card {
+    padding: 27px 17px 23px;
+  }
+
+  .logout-logo {
+    font-size: 16px;
+  }
+
+  .logout-heading h1 {
+    font-size: 21px;
+  }
+
+  .logout-info-text span {
+    font-size: 10px;
+  }
+
+  .logout-tag {
+    font-size: 9px;
+  }
+}
+
+/* LARGE DESKTOP */
+@media (min-width: 1200px) {
+  .logout-wrapper {
+    max-width: 500px;
+  }
+
+  .logout-card {
+    padding: 46px 45px 38px;
+  }
+}
+
+/* REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  .logout-page *,
+  .logout-page *::before,
+  .logout-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================
+   END OF HAFID NOR MEDIA LOGOUT PAGE CSS
+========================================================= */
+
+  </style>
 </head>
 
 <body class="logout-page">
@@ -20,60 +691,133 @@
 
     <section class="logout-card">
 
+      <!-- BRAND -->
       <a href="index.html" class="logout-logo">
+
         <span class="logout-logo-icon">
           <i class="fas fa-newspaper"></i>
         </span>
-        HAFID NOR <strong>MEDIA</strong>
+
+        <span>
+          HAFID NOR <strong>MEDIA</strong>
+        </span>
+
       </a>
 
+      <!-- SUCCESS ICON -->
       <div class="logout-success-icon">
-        <i class="fas fa-check"></i>
+        <span class="logout-success-circle">
+          <i class="fas fa-check"></i>
+        </span>
       </div>
 
-      <span class="logout-tag">LOGOUT SUCCESSFUL</span>
+      <!-- STATUS -->
+      <span class="logout-tag">
+        <i class="fas fa-check-circle"></i>
+        LOGOUT SUCCESSFUL
+      </span>
 
-      <h1>Waad ka baxday akoonkaaga!</h1>
+      <!-- HEADING -->
+      <div class="logout-heading">
 
-      <p>
-        Waad ku mahadsan tahay isticmaalka HAFID NOR MEDIA.
-        Waxaan rajaynaynaa inaan mar kale ku aragno.
-      </p>
+        <h1>Waad ka baxday akoonkaaga!</h1>
 
+        <p>
+          Waad ku mahadsan tahay isticmaalka
+          <strong>HAFID NOR MEDIA.</strong>
+          Waxaan rajaynaynaa inaan mar kale ku aragno.
+        </p>
+
+      </div>
+
+      <!-- LOGOUT INFORMATION -->
+      <div class="logout-info">
+
+        <div class="logout-info-icon">
+          <i class="fas fa-shield-halved"></i>
+        </div>
+
+        <div class="logout-info-text">
+          <strong>Amnigaaga waa muhiim!</strong>
+
+          <span>
+            Hubi inaad ka baxday akoonkaaga haddii aad
+            isticmaalaysay qalab dadweyne.
+          </span>
+        </div>
+
+      </div>
+
+      <!-- BUTTONS -->
       <div class="logout-buttons">
 
         <a href="login.html" class="logout-login-btn">
+
           <i class="fas fa-sign-in-alt"></i>
+
           Mar kale soo gal
+
+          <i class="fas fa-arrow-right logout-arrow"></i>
+
         </a>
 
         <a href="index.html" class="logout-home-btn">
-          <i class="fas fa-home"></i>
+
+          <i class="fas fa-house"></i>
+
           Ku noqo bogga hore
+
         </a>
 
       </div>
 
+      <!-- SECURITY -->
       <div class="logout-security">
-        <i class="fas fa-shield-halved"></i>
-        Akoonkaaga si ammaan ah ayaad uga baxday.
+
+        <i class="fas fa-lock"></i>
+
+        <span>
+          Akoonkaaga si ammaan ah ayaad uga baxday.
+        </span>
+
       </div>
 
     </section>
 
+    <!-- FOOTER -->
     <footer class="logout-footer">
-      © <span id="logoutYear"></span> HAFID NOR MEDIA.
+
+      © <span id="logoutYear"></span>
+
+      <strong>HAFID NOR MEDIA.</strong>
+
       Dhammaan xuquuqdu way dhowran tahay.
+
     </footer>
 
   </main>
 
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- MAIN JAVASCRIPT -->
   <script src="script.js"></script>
 
+  <!-- LOGOUT PAGE SCRIPT -->
   <script>
-    document.getElementById("logoutYear").textContent =
-      new Date().getFullYear();
+    document.addEventListener("DOMContentLoaded", function () {
+
+      "use strict";
+
+      const logoutYear =
+        document.getElementById("logoutYear");
+
+      if (logoutYear) {
+        logoutYear.textContent =
+          new Date().getFullYear();
+      }
+
+    });
   </script>
 
 </body>

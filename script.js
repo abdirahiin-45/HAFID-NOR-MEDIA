@@ -1,461 +1,55 @@
+/* =========================================================
+   HAFID NOR MEDIA — COMPLETE FIXED JAVASCRIPT
+   Somali | English | Arabic
+   Supabase Auth | Owner publishing | News | Newsletter
+   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
-  /* =====================================================
-     HAFID NOR MEDIA
-     COMPLETE MERGED JAVASCRIPT
-     Supabase + Authentication + News + Dashboard
-  ===================================================== */
+  /* 1. SUPABASE CONFIGURATION */
+  const SUPABASE_URL = "https://yracqbffyieivvnhbfgj.supabase.co";
 
-  /* =====================================================
-     1. SUPABASE CONFIGURATION
-  ===================================================== */
+  const SUPABASE_KEY = "sb_publishable_CfxX2L9_QOgJX1Y6WQ3yZA_KmA62nG_";
 
-  const SUPABASE_URL =
-    "https://ccddbcbmypeianekxhez.supabase.co";
+  const OWNER_ID = "98ca9b87-8a68-4093-a4a9-1d7e5cde3048";
 
-  const SUPABASE_KEY =
-    "sb_publishable_orYahZVqH7xGceVZqORwFA_npWRYBlw";
-
+  const NEWS_TABLE = "news";
+  const SUBMISSIONS_TABLE = "news_submissions";
+  const PROFILE_TABLE = "profiles";
+  const NEWSLETTER_TABLE = "newsletter_subscribers";
   const STORAGE_BUCKET = "news-images";
 
-  const OWNER_ID =
-    "9d5c8d5f-02ed-4bd4-a03a-96a9dacb70d2";
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+  const ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+  ];
 
-  if (!window.supabase) {
-    console.error("Supabase CDN lama soo shubin.");
-    return;
-  }
+  const $ = (selector, parent = document) => parent.querySelector(selector);
 
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-  /* =====================================================
-     2. GLOBAL VARIABLES
-  ===================================================== */
-
-  const $ = (selector, parent = document) =>
-    parent.querySelector(selector);
-
-  const $$ = (selector, parent = document) =>
-    [...parent.querySelectorAll(selector)];
+  const $$ = (selector, parent = document) => [
+    ...parent.querySelectorAll(selector),
+  ];
 
   const byId = (id) => document.getElementById(id);
 
+  let db = null;
   let currentUser = null;
   let currentProfile = null;
   let currentNews = [];
-  let currentLanguage = "so";
-  let authInitialized = false;
 
-  /* =====================================================
-     3. HELPERS
-  ===================================================== */
+  let currentLanguage =
+    localStorage.getItem("hafid-language") ||
+    localStorage.getItem("hafidLanguage") ||
+    "so";
 
-  function getValue(...ids) {
-    for (const id of ids) {
-      const element = byId(id);
+  let authReady = false;
+  let authEventQueue = Promise.resolve();
 
-      if (element && "value" in element) {
-        return String(element.value).trim();
-      }
-    }
-
-    return "";
-  }
-
-  function setText(id, value) {
-    const element = byId(id);
-
-    if (element) {
-      element.textContent = value ?? "";
-    }
-  }
-
-  function escapeHTML(value = "") {
-    return String(value).replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    })[char]);
-  }
-
-  function showMessage(element, message, type = "info") {
-    if (!element) return;
-
-    element.textContent = message;
-    element.className = `form-message ${type}`;
-    element.hidden = false;
-  }
-
-  function clearMessage(element) {
-    if (!element) return;
-
-    element.textContent = "";
-    element.hidden = true;
-  }
-
-  function setLoading(button, loading, defaultText = "Submit") {
-    if (!button) return;
-
-    if (loading) {
-      if (!button.dataset.originalHTML) {
-        button.dataset.originalHTML = button.innerHTML;
-      }
-
-      button.disabled = true;
-      button.textContent = "Fadlan sug...";
-    } else {
-      button.disabled = false;
-
-      if (button.dataset.originalHTML) {
-        button.innerHTML = button.dataset.originalHTML;
-        delete button.dataset.originalHTML;
-      } else {
-        button.textContent = defaultText;
-      }
-    }
-  }
-
-  function formatDate(date) {
-    if (!date) return "";
-
-    const parsed = new Date(date);
-
-    if (Number.isNaN(parsed.getTime())) return "";
-
-    const locales = {
-      so: "so-SO",
-      en: "en-US",
-      ar: "ar"
-    };
-
-    return parsed.toLocaleDateString(
-      locales[currentLanguage] || "so-SO",
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      }
-    );
-  }
-
-  function makeSummary(content) {
-    const text = String(content || "").trim();
-
-    return text.length > 180
-      ? text.substring(0, 180) + "..."
-      : text;
-  }
-
-  function isValidUrl(value) {
-    if (!value) return true;
-
-    try {
-      const url = new URL(value);
-
-      return ["https:", "http:"].includes(url.protocol);
-    } catch {
-      return false;
-    }
-  }
-
-  function getSavedValue(key, fallback = null) {
-    try {
-      const value = localStorage.getItem(key);
-      return value ? JSON.parse(value) : fallback;
-    } catch {
-      return fallback;
-    }
-  }
-
-  function isOwner() {
-    return Boolean(
-      currentUser &&
-      (
-        currentUser.id === OWNER_ID ||
-        currentProfile?.role === "owner"
-      )
-    );
-  }
-
-  function setDashboardVisible(visible) {
-    const dashboard = byId("memberDashboard");
-
-    if (!dashboard) return;
-
-    dashboard.hidden = !visible;
-    dashboard.style.display = visible ? "" : "none";
-  }
-
-  /* =====================================================
-     4. DATE AND COPYRIGHT
-  ===================================================== */
-
-  function updateDate() {
-    const element = byId("currentDate");
-
-    if (!element) return;
-
-    const locales = {
-      so: "so-SO",
-      en: "en-US",
-      ar: "ar"
-    };
-
-    element.textContent = new Date().toLocaleDateString(
-      locales[currentLanguage] || "so-SO",
-      {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      }
-    );
-  }
-
-  setText("currentYear", new Date().getFullYear());
-  setText("loginYear", new Date().getFullYear());
-
-  /* =====================================================
-     5. MOBILE NAVIGATION
-  ===================================================== */
-
-  const menuToggle = byId("menuToggle");
-  const mainNav = byId("mainNav");
-
-  function closeMobileMenu() {
-    mainNav?.classList.remove("active");
-    menuToggle?.classList.remove("active");
-    menuToggle?.setAttribute("aria-expanded", "false");
-
-    const icon = $("i", menuToggle);
-
-    if (icon) {
-      icon.className = "fa-solid fa-bars";
-    }
-  }
-
-  menuToggle?.addEventListener("click", () => {
-    if (!mainNav) return;
-
-    const opened = mainNav.classList.toggle("active");
-
-    menuToggle.classList.toggle("active", opened);
-    menuToggle.setAttribute("aria-expanded", String(opened));
-
-    const icon = $("i", menuToggle);
-
-    if (icon) {
-      icon.className = opened
-        ? "fa-solid fa-xmark"
-        : "fa-solid fa-bars";
-    }
-  });
-
-  $$(".main-nav a, #mainNav a").forEach((link) => {
-    link.addEventListener("click", () => {
-      closeMobileMenu();
-
-      $$(".main-nav a, #mainNav a").forEach((item) => {
-        item.classList.remove("active");
-      });
-
-      link.classList.add("active");
-    });
-  });
-
-  /* =====================================================
-     6. DARK MODE
-  ===================================================== */
-
-  const darkModeBtn = byId("darkModeBtn");
-
-  function applyTheme(theme) {
-    const dark = theme === "dark";
-
-    document.body.classList.toggle("dark-mode", dark);
-    document.documentElement.classList.toggle("dark-mode", dark);
-
-    const icon = $("i", darkModeBtn);
-
-    if (icon) {
-      icon.className = dark
-        ? "fa-solid fa-sun"
-        : "fa-solid fa-moon";
-    }
-
-    localStorage.setItem("hafid-theme", theme);
-  }
-
-  applyTheme(
-    localStorage.getItem("hafid-theme") || "light"
-  );
-
-  darkModeBtn?.addEventListener("click", () => {
-    const dark = document.body.classList.contains("dark-mode");
-    applyTheme(dark ? "light" : "dark");
-  });
-
-  /* =====================================================
-     7. COLOR CUSTOMIZER
-  ===================================================== */
-
-  const colorPickerBtn = byId("colorPickerBtn");
-  const colorPanel = byId("colorPanel");
-  const primaryColor = byId("primaryColor");
-  const accentColor = byId("accentColor");
-  const resetColors = byId("resetColors");
-
-  const defaultColors = {
-    primary: "#102b46",
-    accent: "#f47b35"
-  };
-
-  function applyColors(primary, accent) {
-    document.documentElement.style.setProperty("--primary", primary);
-    document.documentElement.style.setProperty("--accent", accent);
-
-    if (primaryColor) primaryColor.value = primary;
-    if (accentColor) accentColor.value = accent;
-  }
-
-  function saveColors() {
-    const colors = {
-      primary: primaryColor?.value || defaultColors.primary,
-      accent: accentColor?.value || defaultColors.accent
-    };
-
-    applyColors(colors.primary, colors.accent);
-
-    localStorage.setItem("hafid-colors", JSON.stringify(colors));
-    localStorage.setItem("hafid-primary", colors.primary);
-    localStorage.setItem("hafid-accent", colors.accent);
-  }
-
-  const savedColors = getSavedValue("hafid-colors");
-
-  applyColors(
-    savedColors?.primary ||
-      localStorage.getItem("hafid-primary") ||
-      defaultColors.primary,
-
-    savedColors?.accent ||
-      localStorage.getItem("hafid-accent") ||
-      defaultColors.accent
-  );
-
-  colorPickerBtn?.addEventListener("click", () => {
-    if (!colorPanel) return;
-
-    const opened = colorPanel.classList.toggle("active");
-
-    colorPanel.classList.toggle("show", opened);
-    colorPanel.hidden = !opened;
-
-    colorPickerBtn.setAttribute("aria-expanded", String(opened));
-  });
-
-  primaryColor?.addEventListener("input", saveColors);
-  accentColor?.addEventListener("input", saveColors);
-
-  $$(".preset").forEach((preset) => {
-    preset.addEventListener("click", () => {
-      const primary = preset.dataset.primary;
-      const accent = preset.dataset.accent;
-
-      if (!primary || !accent) return;
-
-      applyColors(primary, accent);
-
-      const colors = { primary, accent };
-
-      localStorage.setItem("hafid-colors", JSON.stringify(colors));
-      localStorage.setItem("hafid-primary", primary);
-      localStorage.setItem("hafid-accent", accent);
-    });
-  });
-
-  resetColors?.addEventListener("click", () => {
-    applyColors(defaultColors.primary, defaultColors.accent);
-
-    localStorage.removeItem("hafid-colors");
-    localStorage.removeItem("hafid-primary");
-    localStorage.removeItem("hafid-accent");
-  });
-
-  /* =====================================================
-     8. SEARCH SYSTEM
-  ===================================================== */
-
-  const searchBtn = byId("searchBtn");
-  const searchBox = byId("searchBox");
-  const searchInput = byId("searchInput");
-  const searchSubmit = byId("searchSubmit");
-
-  function performSearch() {
-    const query = searchInput?.value.trim().toLowerCase() || "";
-
-    const cards = $$(
-      ".news-card, .side-news, .category-item, [data-news-card]"
-    );
-
-    let found = 0;
-
-    cards.forEach((card) => {
-      const matches = card.textContent.toLowerCase().includes(query);
-
-      card.hidden = !matches;
-
-      if (matches) found++;
-    });
-
-    const resultMessage = byId("searchResults");
-
-    if (resultMessage) {
-      resultMessage.textContent =
-        query && found === 0
-          ? "Wax war ah lagama helin raadintaada."
-          : query
-            ? `${found} natiijo ayaa la helay.`
-            : "";
-    }
-  }
-
-  searchBtn?.addEventListener("click", () => {
-    if (!searchBox) return;
-
-    const opened = searchBox.classList.toggle("active");
-
-    searchBox.classList.toggle("show", opened);
-    searchBox.hidden = !opened;
-
-    if (opened) {
-      searchInput?.focus();
-    } else {
-      if (searchInput) searchInput.value = "";
-      performSearch();
-    }
-  });
-
-  searchSubmit?.addEventListener("click", performSearch);
-  searchInput?.addEventListener("input", performSearch);
-
-  searchInput?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      performSearch();
-    }
-  });
-
-  /* =====================================================
-     9. LANGUAGE SYSTEM
-  ===================================================== */
+  /* 2. TRANSLATIONS */
 
   const translations = {
     so: {
@@ -493,7 +87,32 @@ document.addEventListener("DOMContentLoaded", () => {
       terms: "Shuruudaha Adeegga",
       readSource: "Isha warka",
       close: "Xir",
-      noNews: "Weli wax warar ah lama daabicin."
+      noNews: "Weli wax warar ah lama daabicin.",
+      loading: "Wararka ayaa la soo rarayaa...",
+      wait: "Fadlan sug...",
+      invalidEmail: "Fadlan geli email sax ah.",
+      emailRequired: "Fadlan geli email-kaaga.",
+      subscribed: "Waad ku mahadsan tahay isdiiwaangelintaada!",
+      duplicateEmail: "Email-kan hore ayaa loo diiwaangeliyey.",
+      subscribeError: "Isdiiwaangelintu way fashilantay.",
+      login: "Gal Akoonka",
+      logout: "Ka bax",
+      owner: "Owner / Maamule",
+      member: "Xubin",
+      publishSuccess: "Warka si guul leh ayaa loo daabacay.",
+      noPermission: "Ogolaansho ma lihid.",
+      emptyFields: "Fadlan buuxi meelaha loo baahan yahay.",
+      invalidLogin: "Email ama password khaldan.",
+      registerSuccess:
+        "Akoonka waa la sameeyay. Hubi email-kaaga haddii xaqiijin lagaa rabo.",
+      passwordMismatch: "Labada password isma laha.",
+      passwordShort: "Password-ku waa inuu ugu yaraan 8 xaraf ahaadaa.",
+      imageOnly: "Fadlan dooro sawir JPG, PNG, WebP ama GIF ah.",
+      imageLarge: "Sawirku waa inuusan ka weynaan 5MB.",
+      pending: "Sugaya",
+      approved: "La oggolaaday",
+      rejected: "La diiday",
+      noPending: "Ma jiraan warar sugaya oggolaansho.",
     },
 
     en: {
@@ -531,7 +150,31 @@ document.addEventListener("DOMContentLoaded", () => {
       terms: "Terms of Service",
       readSource: "News source",
       close: "Close",
-      noNews: "No news has been published yet."
+      noNews: "No news has been published yet.",
+      loading: "Loading news...",
+      wait: "Please wait...",
+      invalidEmail: "Please enter a valid email address.",
+      emailRequired: "Please enter your email.",
+      subscribed: "Thank you for subscribing!",
+      duplicateEmail: "This email is already subscribed.",
+      subscribeError: "Subscription failed.",
+      login: "Login",
+      logout: "Logout",
+      owner: "Owner / Administrator",
+      member: "Member",
+      publishSuccess: "News published successfully.",
+      noPermission: "You do not have permission.",
+      emptyFields: "Please complete the required fields.",
+      invalidLogin: "Incorrect email or password.",
+      registerSuccess: "Account created. Verify your email if requested.",
+      passwordMismatch: "Passwords do not match.",
+      passwordShort: "Password must contain at least 8 characters.",
+      imageOnly: "Choose a JPG, PNG, WebP or GIF image.",
+      imageLarge: "Image must be 5MB or smaller.",
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+      noPending: "There are no pending submissions.",
     },
 
     ar: {
@@ -564,75 +207,503 @@ document.addEventListener("DOMContentLoaded", () => {
       business: "الاقتصاد",
       sports: "الرياضة",
       technology: "التكنولوجيا",
-      videos: "مقاطع الفيديو",
+      videos: "الفيديوهات",
       privacy: "سياسة الخصوصية",
       terms: "شروط الخدمة",
       readSource: "مصدر الخبر",
       close: "إغلاق",
-      noNews: "لم يتم نشر أي أخبار بعد."
-    }
+      noNews: "لم يتم نشر أي أخبار بعد.",
+      loading: "جارٍ تحميل الأخبار...",
+      wait: "يرجى الانتظار...",
+      invalidEmail: "يرجى إدخال بريد إلكتروني صحيح.",
+      emailRequired: "يرجى إدخال بريدك الإلكتروني.",
+      subscribed: "شكراً لاشتراكك!",
+      duplicateEmail: "هذا البريد مسجل بالفعل.",
+      subscribeError: "فشل الاشتراك.",
+      login: "تسجيل الدخول",
+      logout: "تسجيل الخروج",
+      owner: "المالك / المدير",
+      member: "عضو",
+      publishSuccess: "تم نشر الخبر بنجاح.",
+      noPermission: "ليس لديك إذن.",
+      emptyFields: "يرجى ملء الحقول المطلوبة.",
+      invalidLogin: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      registerSuccess:
+        "تم إنشاء الحساب. يرجى تأكيد بريدك الإلكتروني إذا طُلب منك ذلك.",
+      passwordMismatch: "كلمتا المرور غير متطابقتين.",
+      passwordShort: "يجب ألا تقل كلمة المرور عن 8 أحرف.",
+      imageOnly: "اختر صورة JPG أو PNG أو WebP أو GIF.",
+      imageLarge: "يجب ألا يتجاوز حجم الصورة 5 ميجابايت.",
+      pending: "قيد الانتظار",
+      approved: "تمت الموافقة",
+      rejected: "مرفوض",
+      noPending: "لا توجد أخبار بانتظار الموافقة.",
+    },
   };
 
-  function applyLanguage(language) {
-    if (!translations[language]) {
-      language = "so";
+  /* 3. HELPER FUNCTIONS */
+
+  const t = (key) =>
+    translations[currentLanguage]?.[key] ?? translations.so[key] ?? key;
+
+  const escapeHTML = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (ch) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[ch],
+    );
+
+  const getValue = (...ids) => {
+    for (const id of ids) {
+      const el = byId(id);
+      if (el && "value" in el) {
+        return String(el.value).trim();
+      }
+    }
+    return "";
+  };
+
+  const setText = (id, value) => {
+    const el = byId(id);
+    if (el) el.textContent = value ?? "";
+  };
+
+  function message(el, text, type = "info") {
+    if (!el) return;
+
+    el.textContent = text;
+    el.className = `form-message ${type}`;
+    el.hidden = false;
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-live", "polite");
+  }
+
+  function clearMessage(el) {
+    if (el) {
+      el.textContent = "";
+      el.hidden = true;
+      el.className = "form-message";
+    }
+  }
+
+  function setLoading(button, loading, fallback = "Submit") {
+    if (!button) return;
+
+    if (loading) {
+      if (!button.dataset.originalHtml) {
+        button.dataset.originalHtml = button.innerHTML;
+      }
+
+      button.disabled = true;
+      button.textContent = t("wait");
+    } else {
+      button.disabled = false;
+
+      if (button.dataset.originalHtml) {
+        button.innerHTML = button.dataset.originalHtml;
+        delete button.dataset.originalHtml;
+      } else {
+        button.textContent = fallback;
+      }
+    }
+  }
+
+  function safeHttpUrl(value) {
+    if (!value) return "";
+
+    try {
+      const url = new URL(value);
+
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch {
+      return "";
+    }
+  }
+
+  function validEmail(value) {
+    const email = String(value || "").trim();
+
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(
+      email,
+    );
+  }
+
+  function dateText(value) {
+    if (!value) return "";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "";
+
+    return date.toLocaleDateString(
+      { so: "so-SO", en: "en-US", ar: "ar" }[currentLanguage],
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      },
+    );
+  }
+
+  function summary(value) {
+    const text = String(value || "").trim();
+
+    return text.length > 190 ? `${text.slice(0, 190)}…` : text;
+  }
+
+  function isOwner() {
+    return Boolean(currentUser && currentUser.id === OWNER_ID);
+  }
+
+  function showDashboard(show) {
+    const el = byId("memberDashboard");
+
+    if (el) {
+      el.hidden = !show;
+      el.style.display = show ? "" : "none";
+    }
+  }
+
+  /* 4. SUPABASE CLIENT */
+
+  if (
+    window.supabase?.createClient &&
+    SUPABASE_KEY.startsWith("sb_") &&
+    !SUPABASE_KEY.includes("PASTE_")
+  ) {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } else {
+    console.error(
+      "Supabase lama bilaabin: geli publishable key-ga saxda ah ee project yracqbffyieivvnhbfgj.",
+    );
+  }
+
+  /* 5. DATE AND LANGUAGE */
+
+  function updateDate() {
+    const el = byId("currentDate");
+
+    if (el) {
+      el.textContent = new Date().toLocaleDateString(
+        { so: "so-SO", en: "en-US", ar: "ar" }[currentLanguage],
+        {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        },
+      );
     }
 
-    currentLanguage = language;
+    setText("currentYear", new Date().getFullYear());
+    setText("loginYear", new Date().getFullYear());
+  }
 
-    document.documentElement.lang = language;
-    document.documentElement.dir =
-      language === "ar" ? "rtl" : "ltr";
+  function applyLanguage(language) {
+    currentLanguage = translations[language] ? language : "so";
 
-    $$("[data-i18n], [data-translate]").forEach((element) => {
-      const key = element.dataset.i18n || element.dataset.translate;
-      const value = translations[language][key];
+    document.documentElement.lang = currentLanguage;
 
-      if (value !== undefined) {
-        element.textContent = value;
+    document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+
+    $$("[data-i18n], [data-translate]").forEach((el) => {
+      const key = el.dataset.i18n || el.dataset.translate;
+
+      if (translations[currentLanguage][key]) {
+        el.textContent = translations[currentLanguage][key];
       }
     });
 
-    $$("[data-i18n-placeholder]").forEach((element) => {
-      const key = element.dataset.i18nPlaceholder;
-      const value = translations[language][key];
+    $$("[data-i18n-placeholder]").forEach((el) => {
+      const key = el.dataset.i18nPlaceholder;
 
-      if (value !== undefined) {
-        element.placeholder = value;
+      if (translations[currentLanguage][key]) {
+        el.placeholder = translations[currentLanguage][key];
       }
     });
+
+    const select = byId("languageSelect");
+
+    if (select) {
+      select.value = currentLanguage;
+    }
+
+    localStorage.setItem("hafid-language", currentLanguage);
+    localStorage.setItem("hafidLanguage", currentLanguage);
 
     updateDate();
-
-    localStorage.setItem("hafid-language", language);
-
-    // Re-render news using the selected language.
     renderPublishedNews(currentNews);
     renderDashboardNews(currentNews);
   }
 
   const languageSelect = byId("languageSelect");
 
-  const savedLanguage =
-    localStorage.getItem("hafid-language") || "so";
-
   if (languageSelect) {
-    languageSelect.value = savedLanguage;
+    languageSelect.addEventListener("change", () => {
+      applyLanguage(languageSelect.value);
+    });
   }
 
-  applyLanguage(savedLanguage);
+  applyLanguage(currentLanguage);
 
-  languageSelect?.addEventListener("change", () => {
-    applyLanguage(languageSelect.value);
+  /* 6. MOBILE NAVIGATION */
+
+  const menuToggle = byId("menuToggle");
+  const mainNav = byId("mainNav");
+
+  function closeMenu() {
+    mainNav?.classList.remove("active", "show");
+    menuToggle?.classList.remove("active");
+
+    menuToggle?.setAttribute("aria-expanded", "false");
+
+    const icon = $("i", menuToggle || document);
+
+    if (icon && menuToggle) {
+      icon.className = "fa-solid fa-bars";
+    }
+  }
+
+  menuToggle?.addEventListener("click", () => {
+    if (!mainNav) return;
+
+    const open = !mainNav.classList.contains("active");
+
+    mainNav.classList.toggle("active", open);
+    mainNav.classList.toggle("show", open);
+
+    menuToggle.classList.toggle("active", open);
+    menuToggle.setAttribute("aria-expanded", String(open));
+
+    const icon = $("i", menuToggle);
+
+    if (icon) {
+      icon.className = open ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+    }
   });
 
-  /* =====================================================
-     10. AUTH MODAL
-  ===================================================== */
+  $$("#mainNav a, .main-nav a").forEach((a) => {
+    a.addEventListener("click", closeMenu);
+  });
+
+  /* 7. DARK MODE */
+
+  function applyTheme(theme) {
+    const dark = theme === "dark";
+
+    document.body.classList.toggle("dark-mode", dark);
+    document.documentElement.classList.toggle("dark-mode", dark);
+
+    const icon = $("i", byId("darkModeBtn") || document);
+
+    if (icon) {
+      icon.className = dark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    }
+
+    localStorage.setItem("hafid-theme", dark ? "dark" : "light");
+
+    localStorage.setItem("hafidDarkMode", dark ? "true" : "false");
+  }
+
+  applyTheme(
+    localStorage.getItem("hafid-theme") ||
+      (localStorage.getItem("hafidDarkMode") === "true" ? "dark" : "light"),
+  );
+
+  byId("darkModeBtn")?.addEventListener("click", () => {
+    applyTheme(
+      document.body.classList.contains("dark-mode") ? "light" : "dark",
+    );
+  });
+
+  /* 8. COLOR CUSTOMIZER */
+
+  const defaultColors = {
+    primary: "#102b46",
+    accent: "#f47b35",
+  };
+
+  const colorPanel = byId("colorPanel");
+
+  function applyColors(primary, accent, persist = false) {
+    if (!/^#[0-9a-f]{6}$/i.test(primary)) {
+      primary = defaultColors.primary;
+    }
+
+    if (!/^#[0-9a-f]{6}$/i.test(accent)) {
+      accent = defaultColors.accent;
+    }
+
+    const root = document.documentElement;
+
+    root.style.setProperty("--primary", primary);
+    root.style.setProperty("--primary-color", primary);
+    root.style.setProperty("--accent", accent);
+    root.style.setProperty("--accent-color", accent);
+
+    if (byId("primaryColor")) {
+      byId("primaryColor").value = primary;
+    }
+
+    if (byId("accentColor")) {
+      byId("accentColor").value = accent;
+    }
+
+    if (persist) {
+      localStorage.setItem("hafid-colors", JSON.stringify({ primary, accent }));
+    }
+  }
+
+  let savedColors = {};
+
+  try {
+    savedColors = JSON.parse(localStorage.getItem("hafid-colors") || "{}");
+  } catch {
+    savedColors = {};
+  }
+
+  applyColors(
+    savedColors.primary ||
+      localStorage.getItem("hafid-primary") ||
+      defaultColors.primary,
+
+    savedColors.accent ||
+      localStorage.getItem("hafid-accent") ||
+      defaultColors.accent,
+  );
+
+  function toggleColorPanel(force) {
+    if (!colorPanel) return;
+
+    const open =
+      typeof force === "boolean"
+        ? force
+        : colorPanel.hidden || !colorPanel.classList.contains("active");
+
+    colorPanel.hidden = !open;
+    colorPanel.classList.toggle("active", open);
+    colorPanel.classList.toggle("show", open);
+
+    byId("colorPickerBtn")?.setAttribute("aria-expanded", String(open));
+  }
+
+  byId("colorPickerBtn")?.addEventListener("click", () => toggleColorPanel());
+
+  ["primaryColor", "accentColor"].forEach((id) => {
+    byId(id)?.addEventListener("input", () => {
+      applyColors(
+        byId("primaryColor")?.value || defaultColors.primary,
+        byId("accentColor")?.value || defaultColors.accent,
+        true,
+      );
+
+      localStorage.setItem(
+        "hafid-primary",
+        byId("primaryColor")?.value || defaultColors.primary,
+      );
+
+      localStorage.setItem(
+        "hafid-accent",
+        byId("accentColor")?.value || defaultColors.accent,
+      );
+    });
+  });
+
+  $$(".preset, [data-primary][data-accent]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const primary = btn.dataset.primary;
+      const accent = btn.dataset.accent;
+
+      if (primary && accent) {
+        applyColors(primary, accent, true);
+
+        localStorage.setItem("hafid-primary", primary);
+        localStorage.setItem("hafid-accent", accent);
+      }
+    });
+  });
+
+  byId("resetColors")?.addEventListener("click", () => {
+    applyColors(defaultColors.primary, defaultColors.accent, true);
+
+    localStorage.setItem("hafid-primary", defaultColors.primary);
+
+    localStorage.setItem("hafid-accent", defaultColors.accent);
+  });
+
+  /* 9. SEARCH */
+
+  const searchInput = byId("searchInput");
+
+  function performSearch() {
+    const query = (searchInput?.value || "").trim().toLocaleLowerCase();
+
+    let count = 0;
+
+    $$(".news-card, .side-news, .category-item, [data-news-card]").forEach(
+      (card) => {
+        const match =
+          !query || card.textContent.toLocaleLowerCase().includes(query);
+
+        card.hidden = !match;
+
+        if (match) count++;
+      },
+    );
+
+    const result = byId("searchResults") || byId("searchResultsMessage");
+
+    if (result) {
+      result.textContent =
+        query && !count
+          ? "Wax war ah lagama helin raadintaada."
+          : query
+            ? `${count} natiijo ayaa la helay.`
+            : "";
+    }
+  }
+
+  byId("searchBtn")?.addEventListener("click", () => {
+    const box = byId("searchBox");
+
+    if (!box) return;
+
+    const open = box.hidden || !box.classList.contains("active");
+
+    box.hidden = !open;
+    box.classList.toggle("active", open);
+    box.classList.toggle("show", open);
+
+    if (open) {
+      searchInput?.focus();
+    } else {
+      if (searchInput) searchInput.value = "";
+      performSearch();
+    }
+  });
+
+  byId("searchSubmit")?.addEventListener("click", performSearch);
+
+  searchInput?.addEventListener("input", performSearch);
+
+  searchInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      performSearch();
+    }
+  });
+
+  /* 10. AUTH MODAL AND FORMS */
 
   const authModal = byId("authModal");
 
-  function openAuthModal() {
+  function openAuth() {
     if (!authModal) return;
 
     authModal.hidden = false;
@@ -640,7 +711,7 @@ document.addEventListener("DOMContentLoaded", () => {
     authModal.setAttribute("aria-hidden", "false");
   }
 
-  function closeAuthModal() {
+  function closeAuth() {
     if (!authModal) return;
 
     authModal.hidden = true;
@@ -650,312 +721,110 @@ document.addEventListener("DOMContentLoaded", () => {
 
   byId("accountBtn")?.addEventListener("click", () => {
     if (currentUser) {
-      setDashboardVisible(true);
+      showDashboard(true);
 
       byId("memberDashboard")?.scrollIntoView({
         behavior: "smooth",
-        block: "start"
+        block: "start",
       });
     } else {
-      openAuthModal();
+      openAuth();
     }
   });
 
-  byId("closeAuthModal")?.addEventListener("click", closeAuthModal);
+  byId("closeAuthModal")?.addEventListener("click", closeAuth);
 
-  $$("[data-close-modal], .close-modal").forEach((button) => {
-    button.addEventListener("click", closeAuthModal);
+  $$("[data-close-modal], .close-modal").forEach((el) => {
+    el.addEventListener("click", closeAuth);
   });
 
-  authModal?.addEventListener("click", (event) => {
-    if (event.target === authModal) closeAuthModal();
+  authModal?.addEventListener("click", (e) => {
+    if (e.target === authModal) closeAuth();
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeAuthModal();
-
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAuth();
       byId("newsDetailsModal")?.remove();
-      byId("newsDetailModal")?.remove();
     }
   });
 
-  /* =====================================================
-     11. LOGIN / REGISTER FORM SWITCH
-  ===================================================== */
+  function showLogin() {
+    if (byId("loginForm")) {
+      byId("loginForm").hidden = false;
+    }
 
-  function showLoginForm() {
-    if (byId("loginForm")) byId("loginForm").hidden = false;
-    if (byId("registerForm")) byId("registerForm").hidden = true;
-
-    clearMessage(byId("loginMessage"));
-    clearMessage(byId("registerMessage"));
-  }
-
-  function showRegisterForm() {
-    if (byId("loginForm")) byId("loginForm").hidden = true;
-    if (byId("registerForm")) byId("registerForm").hidden = false;
+    if (byId("registerForm")) {
+      byId("registerForm").hidden = true;
+    }
 
     clearMessage(byId("loginMessage"));
     clearMessage(byId("registerMessage"));
   }
 
-  $$("#showRegisterBtn, #showRegister, #switchToRegister, .show-register")
-    .forEach((button) => {
-      button.addEventListener("click", showRegisterForm);
-    });
+  function showRegister() {
+    if (byId("loginForm")) {
+      byId("loginForm").hidden = true;
+    }
 
-  $$("#showLoginBtn, #showLogin, #switchToLogin, .show-login")
-    .forEach((button) => {
-      button.addEventListener("click", showLoginForm);
-    });
+    if (byId("registerForm")) {
+      byId("registerForm").hidden = false;
+    }
 
-  /* =====================================================
-     12. LOAD USER PROFILE
-  ===================================================== */
+    clearMessage(byId("loginMessage"));
+    clearMessage(byId("registerMessage"));
+  }
+
+  $$(
+    "#showRegisterBtn, #showRegister, #switchToRegister, .show-register",
+  ).forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      showRegister();
+    });
+  });
+
+  $$("#showLoginBtn, #showLogin, #switchToLogin, .show-login").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      showLogin();
+    });
+  });
 
   async function loadProfile() {
-    if (!currentUser) {
+    if (!db || !currentUser) {
       currentProfile = null;
       return null;
     }
 
-    try {
-      const { data, error } = await db
-        .from("profiles")
-        .select("*")
-        .eq("id", currentUser.id)
-        .maybeSingle();
+    const { data, error } = await db
+      .from(PROFILE_TABLE)
+      .select("*")
+      .eq("id", currentUser.id)
+      .maybeSingle();
 
-      if (error) throw error;
-
-      currentProfile = data;
-      return data;
-
-    } catch (error) {
-      console.error("Profile loading error:", error);
+    if (error) {
+      console.error("Profile read:", error);
       currentProfile = null;
       return null;
     }
+
+    currentProfile = data;
+
+    return data;
   }
-
-  /* =====================================================
-     13. LOGIN
-  ===================================================== */
-
-  const loginForm = byId("loginForm");
-
-  loginForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const message = byId("loginMessage");
-
-    const button =
-      byId("loginSubmit") ||
-      $('button[type="submit"]', loginForm);
-
-    clearMessage(message);
-
-    const email = getValue("loginEmail");
-    const password = byId("loginPassword")?.value || "";
-
-    if (!email || !password) {
-      showMessage(
-        message,
-        "Fadlan geli email-ka iyo password-ka.",
-        "error"
-      );
-      return;
-    }
-
-    setLoading(button, true, "Login");
-
-    try {
-      const { data, error } = await db.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) throw error;
-
-      currentUser = data.user;
-
-      await loadProfile();
-      await updateDashboard();
-      await loadPublishedNews();
-
-      closeAuthModal();
-      loginForm.reset();
-
-    } catch (error) {
-      console.error("Login error:", error);
-
-      showMessage(
-        message,
-        error.message || "Email ama password khaldan.",
-        "error"
-      );
-
-    } finally {
-      setLoading(button, false, "Login");
-    }
-  });
-
-  /* =====================================================
-     14. REGISTER
-  ===================================================== */
-
-  const registerForm = byId("registerForm");
-
-  registerForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const message = byId("registerMessage");
-
-    const button =
-      byId("registerSubmit") ||
-      $('button[type="submit"]', registerForm);
-
-    clearMessage(message);
-
-    const name = getValue(
-      "registerName",
-      "registerFullName",
-      "fullName",
-      "signupName"
-    );
-
-    const email = getValue("registerEmail", "signupEmail");
-
-    const password =
-      byId("registerPassword")?.value ||
-      byId("signupPassword")?.value ||
-      "";
-
-    const confirmPassword =
-      byId("registerConfirmPassword")?.value ||
-      byId("confirmPassword")?.value ||
-      "";
-
-    if (!name || !email || !password || !confirmPassword) {
-      showMessage(message, "Fadlan buuxi dhammaan meelaha.", "error");
-      return;
-    }
-
-    if (password.length < 8) {
-      showMessage(
-        message,
-        "Password-ku waa inuu ugu yaraan 8 xaraf ahaadaa.",
-        "error"
-      );
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      showMessage(message, "Labada password isma laha.", "error");
-      return;
-    }
-
-    setLoading(button, true, "Register");
-
-    try {
-      const { data, error } = await db.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: name }
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.user && data.session) {
-        currentUser = data.user;
-
-        await loadProfile();
-        await updateDashboard();
-        await loadPublishedNews();
-
-        closeAuthModal();
-      }
-
-      showMessage(
-        message,
-        data.session
-          ? "Akoonkaaga waa la sameeyay."
-          : "Akoonka waa la sameeyay. Fadlan email-kaaga xaqiiji.",
-        "success"
-      );
-
-      registerForm.reset();
-
-    } catch (error) {
-      console.error("Register error:", error);
-
-      showMessage(
-        message,
-        error.message || "Diiwaangelintu way fashilantay.",
-        "error"
-      );
-
-    } finally {
-      setLoading(button, false, "Register");
-    }
-  });
-
-  /* =====================================================
-     15. FORGOT PASSWORD
-  ===================================================== */
-
-  byId("forgotPasswordBtn")?.addEventListener("click", async () => {
-    const email = getValue("loginEmail");
-    const message = byId("loginMessage");
-
-    clearMessage(message);
-
-    if (!email) {
-      showMessage(message, "Marka hore geli email-kaaga.", "error");
-      return;
-    }
-
-    try {
-      const { error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin
-      });
-
-      if (error) throw error;
-
-      showMessage(
-        message,
-        "Linkiga dib-u-dejinta password-ka waxaa lagu diray email-kaaga.",
-        "success"
-      );
-
-    } catch (error) {
-      console.error("Password reset error:", error);
-
-      showMessage(
-        message,
-        error.message || "Password reset wuu fashilmay.",
-        "error"
-      );
-    }
-  });
-
-  /* =====================================================
-     16. UPDATE DASHBOARD
-  ===================================================== */
 
   async function updateDashboard() {
     if (!currentUser) {
       currentProfile = null;
-      setDashboardVisible(false);
+      showDashboard(false);
 
       if (byId("ownerPublishPanel")) {
         byId("ownerPublishPanel").hidden = true;
       }
 
-      setText("accountBtnText", "Account");
+      setText("accountBtnText", t("account"));
+
       return;
     }
 
@@ -969,29 +838,28 @@ document.addEventListener("DOMContentLoaded", () => {
       currentProfile?.full_name ||
       currentUser.user_metadata?.full_name ||
       currentUser.email?.split("@")[0] ||
-      "Akhriste";
+      t("member");
 
     setText("memberDisplayName", name);
     setText("memberDisplayEmail", currentUser.email);
-
-    setText(
-      "memberRole",
-      owner ? "Owner / Maamule" : "Reader / Akhriste"
-    );
+    setText("memberRole", owner ? t("owner") : t("member"));
 
     setText("profileName", name);
     setText("profileEmail", currentUser.email);
-    setText("profileType", owner ? "Owner" : "Reader");
-    setText("profileDate", formatDate(currentUser.created_at));
+    setText("profileType", owner ? "Owner" : "Member");
+    setText("profileDate", dateText(currentUser.created_at));
 
-    const ownerPanel = byId("ownerPublishPanel");
-    if (ownerPanel) ownerPanel.hidden = !owner;
+    if (byId("ownerPublishPanel")) {
+      byId("ownerPublishPanel").hidden = !owner;
+    }
 
-    const ownerBadge = byId("ownerBadge");
-    if (ownerBadge) ownerBadge.hidden = !owner;
+    if (byId("ownerBadge")) {
+      byId("ownerBadge").hidden = !owner;
+    }
 
     setText("accountBtnText", name);
-    setDashboardVisible(true);
+
+    showDashboard(true);
 
     await loadMySubmissions();
 
@@ -1000,89 +868,223 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* =====================================================
-     17. LOGOUT
-  ===================================================== */
+  /* 11. LOGIN */
 
-  async function logoutUser() {
+  byId("loginForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const msg = byId("loginMessage");
+
+    const btn = byId("loginSubmit") || $('button[type="submit"]', form);
+
+    clearMessage(msg);
+
+    const email = getValue("loginEmail");
+    const password = byId("loginPassword")?.value || "";
+
+    if (!db) {
+      return message(msg, "Supabase key-ga saxda ah geli script.js.", "error");
+    }
+
+    if (!validEmail(email) || !password) {
+      return message(
+        msg,
+        !email ? t("emailRequired") : t("invalidEmail"),
+        "error",
+      );
+    }
+
+    setLoading(btn, true);
+
     try {
-      const { error } = await db.auth.signOut();
+      const { data, error } = await db.auth.signInWithPassword({
+        email,
+        password,
+      });
 
       if (error) throw error;
 
-      currentUser = null;
-      currentProfile = null;
-      currentNews = [];
+      currentUser = data.user;
 
-      setDashboardVisible(false);
-      closeAuthModal();
+      await loadProfile();
+      await updateDashboard();
+      await loadPublishedNews();
 
-      window.location.reload();
+      closeAuth();
+      form.reset();
 
-    } catch (error) {
-      console.error("Logout error:", error);
-      alert("Ka bixitaanku wuu fashilmay: " + error.message);
+      message(msg, "Si guul leh ayaad u gashay.", "success");
+    } catch (err) {
+      console.error("Login:", err);
+
+      message(msg, err.message || t("invalidLogin"), "error");
+    } finally {
+      setLoading(btn, false, t("login"));
     }
-  }
+  });
 
-  byId("logoutBtn")?.addEventListener("click", logoutUser);
+  /* 12. REGISTER */
 
-  /* =====================================================
-     18. IMAGE UPLOAD
-  ===================================================== */
+  byId("registerForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  async function uploadNewsImage(file) {
+    const form = e.currentTarget;
+    const msg = byId("registerMessage");
+
+    const btn = byId("registerSubmit") || $('button[type="submit"]', form);
+
+    clearMessage(msg);
+
+    const name = getValue(
+      "registerName",
+      "registerFullName",
+      "fullName",
+      "signupName",
+    );
+
+    const email = getValue("registerEmail", "signupEmail");
+
+    const password =
+      byId("registerPassword")?.value || byId("signupPassword")?.value || "";
+
+    const confirm =
+      byId("registerConfirmPassword")?.value ||
+      byId("confirmPassword")?.value ||
+      "";
+
+    if (!db) {
+      return message(msg, "Supabase key-ga saxda ah geli script.js.", "error");
+    }
+
+    if (!name || !validEmail(email) || !password || !confirm) {
+      return message(
+        msg,
+        !validEmail(email) ? t("invalidEmail") : t("emptyFields"),
+        "error",
+      );
+    }
+
+    if (password.length < 8) {
+      return message(msg, t("passwordShort"), "error");
+    }
+
+    if (password !== confirm) {
+      return message(msg, t("passwordMismatch"), "error");
+    }
+
+    setLoading(btn, true);
+
+    try {
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.session && data.user) {
+        currentUser = data.user;
+
+        await loadProfile();
+        await updateDashboard();
+
+        closeAuth();
+      }
+
+      message(msg, t("registerSuccess"), "success");
+
+      form.reset();
+    } catch (err) {
+      console.error("Register:", err);
+
+      message(msg, err.message || "Diiwaangelintu way fashilantay.", "error");
+    } finally {
+      setLoading(btn, false, "Register");
+    }
+  });
+
+  /* 13. FORGOT PASSWORD */
+
+  byId("forgotPasswordBtn")?.addEventListener("click", async () => {
+    const email = getValue("loginEmail");
+    const msg = byId("loginMessage");
+
+    clearMessage(msg);
+
+    if (!db) {
+      return message(msg, "Supabase key-ga saxda ah geli script.js.", "error");
+    }
+
+    if (!validEmail(email)) {
+      return message(msg, t("emailRequired"), "error");
+    }
+
+    try {
+      const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin,
+      });
+
+      if (error) throw error;
+
+      message(
+        msg,
+        "Linkiga dib-u-dejinta password-ka waxaa lagu diray email-kaaga.",
+        "success",
+      );
+    } catch (err) {
+      console.error("Reset password:", err);
+
+      message(msg, err.message, "error");
+    }
+  });
+
+  /* 14. IMAGE UPLOAD AND PREVIEW */
+
+  async function uploadImage(file) {
     if (!file) return null;
 
-    if (!file.type.startsWith("image/")) {
-      throw new Error("Fadlan dooro sawir sax ah.");
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      throw new Error(t("imageOnly"));
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error("Sawirku waa inuusan ka weynaan 5MB.");
+    if (file.size > MAX_IMAGE_SIZE) {
+      throw new Error(t("imageLarge"));
     }
 
-    if (!currentUser) {
-      throw new Error("Fadlan marka hore login samee.");
+    if (!db || !currentUser) {
+      throw new Error("Fadlan marka hore gal akoonkaaga.");
     }
 
-    const extension =
-      file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const ext = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+      "image/gif": "gif",
+    }[file.type];
 
-    const safeExtension = /^[a-z0-9]+$/.test(extension)
-      ? extension
-      : "jpg";
-
-    const uniqueName =
-      typeof crypto.randomUUID === "function"
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-
-    const filePath =
-      `${currentUser.id}/${uniqueName}.${safeExtension}`;
+    const filename = `${currentUser.id}/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}.${ext}`;
 
     const { error } = await db.storage
       .from(STORAGE_BUCKET)
-      .upload(filePath, file, {
+      .upload(filename, file, {
         cacheControl: "3600",
         upsert: false,
-        contentType: file.type
+        contentType: file.type,
       });
 
     if (error) throw error;
 
-    const { data } = db.storage
-      .from(STORAGE_BUCKET)
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
+    return db.storage.from(STORAGE_BUCKET).getPublicUrl(filename).data
+      .publicUrl;
   }
 
-  /* =====================================================
-     19. IMAGE PREVIEW
-  ===================================================== */
-
-  function setupImagePreview(inputId, previewId) {
+  function setupPreview(inputId, previewId) {
     const input = byId(inputId);
     const preview = byId(previewId);
 
@@ -1097,18 +1099,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (!file.type.startsWith("image/")) {
-        alert("Fadlan dooro sawir sax ah.");
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
         input.value = "";
         preview.hidden = true;
-        return;
+
+        return alert(t("imageOnly"));
       }
 
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Sawirku waa inuusan ka weynaan 5MB.");
+      if (file.size > MAX_IMAGE_SIZE) {
         input.value = "";
         preview.hidden = true;
-        return;
+
+        return alert(t("imageLarge"));
       }
 
       const reader = new FileReader();
@@ -1126,104 +1128,82 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  setupImagePreview("newsImageFile", "newsImagePreview");
+  setupPreview("newsImageFile", "newsImagePreview");
 
-  setupImagePreview(
-    "memberNewsImageFile",
-    "memberNewsImagePreview"
-  );
+  setupPreview("memberNewsImageFile", "memberNewsImagePreview");
 
-  /* =====================================================
-     20. OWNER PUBLISH NEWS
-  ===================================================== */
+  /* 15. OWNER PUBLISH NEWS */
 
-  const ownerNewsForm = byId("ownerNewsForm");
+  byId("ownerNewsForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  ownerNewsForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    const form = e.currentTarget;
+    const msg = byId("ownerNewsMessage");
 
-    const message = byId("ownerNewsMessage");
+    const btn = byId("publishNewsBtn") || $('button[type="submit"]', form);
 
-    const button =
-      byId("publishNewsBtn") ||
-      $('button[type="submit"]', ownerNewsForm);
+    clearMessage(msg);
 
-    clearMessage(message);
-
-    if (!currentUser) {
-      showMessage(message, "Fadlan marka hore login samee.", "error");
-      return;
+    if (!db || !currentUser) {
+      return message(msg, "Fadlan marka hore gal akoonkaaga.", "error");
     }
 
-    await loadProfile();
-
     if (!isOwner()) {
-      showMessage(
-        message,
-        "Kaliya Owner ayaa si toos ah u daabici kara wararka.",
-        "error"
-      );
-      return;
+      return message(msg, t("noPermission"), "error");
     }
 
     const title = getValue("newsTitle");
     const category = getValue("newsCategory");
     const location = getValue("newsLocation");
     const content = getValue("newsContent");
-    const sourceUrl = getValue("newsSource");
-    const imageUrlInput = getValue("newsImage");
+    const source = getValue("newsSource");
+
     const imageFile = byId("newsImageFile")?.files?.[0];
 
     if (!title || !category || !content) {
-      showMessage(
-        message,
-        "Fadlan geli cinwaanka, qaybta iyo qoraalka warka.",
-        "error"
-      );
-      return;
+      return message(msg, t("emptyFields"), "error");
     }
 
-    if (!isValidUrl(sourceUrl) || !isValidUrl(imageUrlInput)) {
-      showMessage(
-        message,
-        "URL-ka sawirka ama isha warka sax ma aha.",
-        "error"
+    if (source && !safeHttpUrl(source)) {
+      return message(
+        msg,
+        "URL-ka isha warka waa inuu ku bilaabmaa http:// ama https://.",
+        "error",
       );
-      return;
     }
 
-    setLoading(button, true, "Daabac Warka");
+    setLoading(btn, true);
 
     try {
-      let imageUrl = imageUrlInput || null;
+      let imageUrl = getValue("newsImage") || null;
 
-      if (imageFile) {
-        imageUrl = await uploadNewsImage(imageFile);
+      if (imageUrl && !safeHttpUrl(imageUrl)) {
+        throw new Error("URL-ka sawirka sax ma aha.");
       }
 
-      const { error } = await db
-        .from("news_submissions")
-        .insert({
-          user_id: currentUser.id,
-          title,
-          category,
-          location: location || null,
-          summary: makeSummary(content),
-          content,
-          image_url: imageUrl,
-          source_url: sourceUrl || null,
-          status: "approved"
-        });
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
+      const payload = {
+        title,
+        category,
+        location: location || null,
+        content,
+        summary: summary(content),
+        image_url: imageUrl,
+        source_url: source || null,
+        author_id: currentUser.id,
+        status: "approved",
+      };
+
+      const { error } = await db.from(NEWS_TABLE).insert(payload);
 
       if (error) throw error;
 
-      showMessage(
-        message,
-        "Hambalyo! Warka si guul leh ayaa loo daabacay.",
-        "success"
-      );
+      message(msg, t("publishSuccess"), "success");
 
-      ownerNewsForm.reset();
+      form.reset();
 
       const preview = byId("newsImagePreview");
 
@@ -1233,100 +1213,77 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       await loadPublishedNews();
-      await loadMySubmissions();
-      await loadPendingNews();
+    } catch (err) {
+      console.error("Publish news:", err);
 
-    } catch (error) {
-      console.error("Owner publish error:", error);
-
-      showMessage(
-        message,
-        error.message || "Warka lama daabici karin.",
-        "error"
-      );
-
+      message(msg, err.message || "Warka lama daabici karin.", "error");
     } finally {
-      setLoading(button, false, "Daabac Warka");
+      setLoading(btn, false, "Daabac Warka");
     }
   });
 
-  /* =====================================================
-     21. MEMBER NEWS SUBMISSION
-  ===================================================== */
+  /* 16. OPTIONAL MEMBER NEWS SUBMISSION */
 
-  const memberNewsForm = byId("memberNewsForm");
+  byId("memberNewsForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  memberNewsForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    const form = e.currentTarget;
+    const msg = byId("memberNewsMessage");
 
-    const message = byId("memberNewsMessage");
+    const btn = byId("submitMemberNewsBtn") || $('button[type="submit"]', form);
 
-    const button =
-      byId("submitMemberNewsBtn") ||
-      $('button[type="submit"]', memberNewsForm);
+    clearMessage(msg);
 
-    clearMessage(message);
-
-    if (!currentUser) {
-      showMessage(message, "Fadlan marka hore login samee.", "error");
-      return;
+    if (!db || !currentUser) {
+      return message(msg, "Fadlan marka hore gal akoonkaaga.", "error");
     }
 
     const title = getValue("memberNewsTitle");
     const category = getValue("memberNewsCategory");
     const location = getValue("memberNewsLocation");
     const content = getValue("memberNewsContent");
-    const sourceUrl = getValue("memberNewsSource");
+    const source = getValue("memberNewsSource");
 
-    const imageFile =
-      byId("memberNewsImageFile")?.files?.[0];
+    const file = byId("memberNewsImageFile")?.files?.[0];
 
     if (!title || !category || !content) {
-      showMessage(
-        message,
-        "Fadlan buuxi cinwaanka, qaybta iyo qoraalka.",
-        "error"
-      );
-      return;
+      return message(msg, t("emptyFields"), "error");
     }
 
-    if (!isValidUrl(sourceUrl)) {
-      showMessage(message, "Isha warka URL-keedu sax ma aha.", "error");
-      return;
+    if (source && !safeHttpUrl(source)) {
+      return message(msg, "Isha warka URL-keedu sax ma aha.", "error");
     }
 
-    setLoading(button, true, "Gudbi Warka");
+    setLoading(btn, true);
 
     try {
       let imageUrl = null;
 
-      if (imageFile) {
-        imageUrl = await uploadNewsImage(imageFile);
+      if (file) {
+        imageUrl = await uploadImage(file);
       }
 
-      const { error } = await db
-        .from("news_submissions")
-        .insert({
-          user_id: currentUser.id,
-          title,
-          category,
-          location: location || null,
-          summary: makeSummary(content),
-          content,
-          image_url: imageUrl,
-          source_url: sourceUrl || null,
-          status: "pending"
-        });
+      const { error } = await db.from(SUBMISSIONS_TABLE).insert({
+        user_id: currentUser.id,
+        title,
+        category,
+        location: location || null,
+        summary: summary(content),
+        content,
+        image_url: imageUrl,
+        source_url: source || null,
+        status: "pending",
+      });
 
       if (error) throw error;
 
-      showMessage(
-        message,
-        "Warka waa la gudbiyay. Wuxuu sugayaa oggolaanshaha Owner-ka.",
-        "success"
+      message(
+        msg,
+        "Warka waa la gudbiyay; wuxuu sugayaa oggolaanshaha maamulka.",
+        "success",
       );
 
-      memberNewsForm.reset();
+      form.reset();
 
       const preview = byId("memberNewsImagePreview");
 
@@ -1336,43 +1293,44 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       await loadMySubmissions();
+    } catch (err) {
+      console.error("Member submission:", err);
 
-    } catch (error) {
-      console.error("Member submission error:", error);
-
-      showMessage(
-        message,
-        error.message || "Warka lama gudbin karin.",
-        "error"
-      );
-
+      message(msg, err.message, "error");
     } finally {
-      setLoading(button, false, "Gudbi Warka");
+      setLoading(btn, false, "Gudbi Warka");
     }
   });
 
-  /* =====================================================
-     22. LOAD APPROVED NEWS
-  ===================================================== */
+  /* 17. LOAD PUBLIC NEWS */
 
   async function loadPublishedNews() {
-    const homeContainer = byId("publishedNewsList");
+    const home = byId("publishedNewsList");
 
-    const dashboardContainer =
-      byId("dashboardPublishedNewsList") ||
-      byId("dashboardNewsList");
+    const dashboard =
+      byId("dashboardPublishedNewsList") || byId("dashboardNewsList");
 
-    if (homeContainer) {
-      homeContainer.innerHTML =
-        '<p class="loading-news">Wararka ayaa la soo rarayaa...</p>';
+    if (!db) {
+      if (home) {
+        home.innerHTML =
+          '<p class="error-message">Supabase publishable key lama gelin.</p>';
+      }
+
+      return;
+    }
+
+    if (home) {
+      home.innerHTML = `<p class="loading-news">${escapeHTML(t("loading"))}</p>`;
     }
 
     try {
       const { data, error } = await db
-        .from("news_submissions")
+        .from(NEWS_TABLE)
         .select("*")
         .eq("status", "approved")
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+          ascending: false,
+        });
 
       if (error) throw error;
 
@@ -1380,102 +1338,86 @@ document.addEventListener("DOMContentLoaded", () => {
 
       renderPublishedNews(currentNews);
       renderDashboardNews(currentNews);
+    } catch (err) {
+      console.error("Load public news:", err);
 
-    } catch (error) {
-      console.error("Published news error:", error);
+      const html =
+        '<p class="error-message">Wararka lama soo bandhigi karin. Hubi in table-ka news iyo RLS policy ay sax yihiin.</p>';
 
-      const errorHTML =
-        '<p class="error-message">Wararka lama soo bandhigi karin. Hubi Supabase RLS policies.</p>';
-
-      if (homeContainer) homeContainer.innerHTML = errorHTML;
-
-      if (dashboardContainer) {
-        dashboardContainer.innerHTML = errorHTML;
-      }
+      if (home) home.innerHTML = html;
+      if (dashboard) dashboard.innerHTML = html;
     }
   }
-
-  /* =====================================================
-     23. RENDER HOMEPAGE NEWS
-  ===================================================== */
 
   function renderPublishedNews(news) {
     const container = byId("publishedNewsList");
 
     if (!container) return;
 
-    if (!news || news.length === 0) {
-      container.innerHTML =
-        `<p class="no-news">${escapeHTML(translations[currentLanguage].noNews)}</p>`;
+    if (!news?.length) {
+      container.innerHTML = `<p class="no-news">${escapeHTML(t("noNews"))}</p>`;
+
       return;
     }
 
-    container.innerHTML = news.map((item) => {
-      const title = escapeHTML(item.title || "");
-      const category = escapeHTML(item.category || "Warar");
+    container.innerHTML = news
+      .map((item) => {
+        const title = escapeHTML(item.title);
+        const image = safeHttpUrl(item.image_url);
+        const id = escapeHTML(item.id);
 
-      const summary = escapeHTML(
-        item.summary || makeSummary(item.content)
-      );
-
-      const location = escapeHTML(item.location || "");
-
-      const image =
-        item.image_url && isValidUrl(item.image_url)
-          ? `
-            <div class="news-image">
-              <img
-                src="${escapeHTML(item.image_url)}"
-                alt="${title}"
-                loading="lazy"
-                onerror="this.parentElement.style.display='none'">
-            </div>
-          `
-          : "";
-
-      return `
+        return `
         <article
           class="news-card database-news-card"
           data-news-card
-          data-id="${escapeHTML(item.id)}">
-
-          ${image}
+          data-id="${id}"
+        >
+          ${
+            image
+              ? `
+                <div class="news-image">
+                  <img
+                    src="${escapeHTML(image)}"
+                    alt="${title}"
+                    loading="lazy"
+                  >
+                </div>
+              `
+              : ""
+          }
 
           <div class="news-info news-content">
-
             <span class="category-badge news-category">
-              ${category}
+              ${escapeHTML(item.category || "Warar")}
             </span>
 
             <h3 class="news-title">${title}</h3>
 
-            <p class="news-summary">${summary}</p>
+            <p class="news-summary">
+              ${escapeHTML(item.summary || summary(item.content))}
+            </p>
 
             <div class="news-meta">
-              <span>${location}</span>
+              <span>${escapeHTML(item.location || "")}</span>
+
               <span class="news-date">
-                ${formatDate(item.created_at)}
+                ${escapeHTML(dateText(item.created_at))}
               </span>
             </div>
 
             <button
               type="button"
               class="read-more read-more-btn"
-              data-read-news="${escapeHTML(item.id)}">
-
-              ${escapeHTML(translations[currentLanguage].readNews)}
-              <i class="fa-solid fa-arrow-right"></i>
+              data-read-news="${id}"
+            >
+              ${escapeHTML(t("readNews"))}
             </button>
-
           </div>
         </article>
       `;
-    }).join("");
+      })
+      .join("");
   }
-
-  /* =====================================================
-     24. DASHBOARD PUBLISHED NEWS
-  ===================================================== */
 
   function renderDashboardNews(news) {
     const container =
@@ -1485,18 +1427,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!container) return;
 
-    if (!news || news.length === 0) {
-      container.innerHTML = "<p>Weli warar lama daabicin.</p>";
+    if (!news?.length) {
+      container.innerHTML = `<p>${escapeHTML(t("noNews"))}</p>`;
+
       return;
     }
 
-    container.innerHTML = news.map((item) => `
+    container.innerHTML = news
+      .map(
+        (item) => `
       <article class="dashboard-news-item">
-
         <div>
           <h4>${escapeHTML(item.title)}</h4>
+
           <p>${escapeHTML(item.category || "Warar")}</p>
-          <small>${formatDate(item.created_at)}</small>
+
+          <small>
+            ${escapeHTML(dateText(item.created_at))}
+          </small>
         </div>
 
         ${
@@ -1505,58 +1453,35 @@ document.addEventListener("DOMContentLoaded", () => {
               <button
                 type="button"
                 class="delete-news-btn"
-                data-delete-news="${escapeHTML(item.id)}">
+                data-delete-news="${escapeHTML(item.id)}"
+              >
                 Delete
               </button>
             `
             : ""
         }
-
       </article>
-    `).join("");
+    `,
+      )
+      .join("");
   }
 
-  /* =====================================================
-     25. NEWS DETAILS MODAL
-  ===================================================== */
+  /* 18. NEWS DETAILS */
 
-  function openNewsDetails(newsId) {
-    const item = currentNews.find(
-      (news) => String(news.id) === String(newsId)
-    );
+  function openNewsDetails(id) {
+    const item = currentNews.find((news) => String(news.id) === String(id));
 
     if (!item) return;
 
     byId("newsDetailsModal")?.remove();
-    byId("newsDetailModal")?.remove();
 
     const modal = document.createElement("div");
 
     modal.id = "newsDetailsModal";
     modal.className = "news-details-modal news-detail-modal";
 
-    const safeImage =
-      item.image_url && isValidUrl(item.image_url)
-        ? `
-          <img
-            src="${escapeHTML(item.image_url)}"
-            alt="${escapeHTML(item.title)}">
-        `
-        : "";
-
-    const safeSource =
-      item.source_url && isValidUrl(item.source_url)
-        ? `
-          <p>
-            <a
-              href="${escapeHTML(item.source_url)}"
-              target="_blank"
-              rel="noopener noreferrer">
-              ${escapeHTML(translations[currentLanguage].readSource)}
-            </a>
-          </p>
-        `
-        : "";
+    const image = safeHttpUrl(item.image_url);
+    const source = safeHttpUrl(item.source_url);
 
     modal.innerHTML = `
       <div class="news-details-content news-detail-content">
@@ -1564,8 +1489,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <button
           type="button"
           class="news-details-close news-detail-close"
-          aria-label="${escapeHTML(translations[currentLanguage].close)}">
-          <i class="fa-solid fa-xmark"></i>
+          aria-label="${escapeHTML(t("close"))}"
+        >
+          ×
         </button>
 
         <span class="category-badge">
@@ -1574,286 +1500,311 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <h2>${escapeHTML(item.title)}</h2>
 
-        <p class="news-date">
-          ${formatDate(item.created_at)}
-        </p>
+        <p>${escapeHTML(dateText(item.created_at))}</p>
 
-        ${safeImage}
+        ${
+          image
+            ? `
+              <img
+                src="${escapeHTML(image)}"
+                alt="${escapeHTML(item.title)}"
+              >
+            `
+            : ""
+        }
 
-        <p class="news-details-location">
-          ${escapeHTML(item.location || "")}
-        </p>
-
-        <p class="news-detail-summary">
-          ${escapeHTML(item.summary || "")}
-        </p>
+        <p>${escapeHTML(item.location || "")}</p>
 
         <div class="news-full-content news-detail-body">
-          ${escapeHTML(item.content || "").replace(/\n/g, "<br>")}
+          ${escapeHTML(item.content || "").replace(/\r?\n/g, "<br>")}
         </div>
 
-        ${safeSource}
+        ${
+          source
+            ? `
+              <p>
+                <a
+                  href="${escapeHTML(source)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  ${escapeHTML(t("readSource"))}
+                </a>
+              </p>
+            `
+            : ""
+        }
 
-        <p class="news-detail-brand">
-          HAFID NOR MEDIA
-        </p>
-
+        <p>HAFID NOR MEDIA</p>
       </div>
     `;
 
     document.body.appendChild(modal);
 
-    modal.hidden = false;
-    modal.classList.add("active", "show");
-
-    modal.querySelector(".news-details-close")
+    modal
+      .querySelector(".news-details-close")
       ?.addEventListener("click", () => modal.remove());
 
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) modal.remove();
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.remove();
     });
   }
 
-  /* =====================================================
-     26. NEWS CLICK EVENTS
-  ===================================================== */
+  /* 19. NEWS BUTTON ACTIONS */
 
-  document.addEventListener("click", (event) => {
-    const target = event.target;
+  document.addEventListener("click", (e) => {
+    const target = e.target instanceof Element ? e.target : null;
 
-    if (!(target instanceof Element)) return;
+    if (!target) return;
 
-    const readButton = target.closest("[data-read-news]");
+    const read = target.closest("[data-read-news]");
 
-    if (readButton) {
-      openNewsDetails(readButton.dataset.readNews);
+    if (read) {
+      openNewsDetails(read.dataset.readNews);
       return;
     }
 
-    const deleteButton = target.closest("[data-delete-news]");
+    const del = target.closest("[data-delete-news]");
 
-    if (deleteButton) {
-      deleteNews(deleteButton.dataset.deleteNews);
+    if (del) {
+      deleteNews(del.dataset.deleteNews);
       return;
     }
 
-    const approveButton = target.closest("[data-approve-news]");
+    const approve = target.closest("[data-approve-news]");
 
-    if (approveButton) {
-      moderateNews(approveButton.dataset.approveNews, "approved");
+    if (approve) {
+      moderateNews(approve.dataset.approveNews, "approved");
+
       return;
     }
 
-    const rejectButton = target.closest("[data-reject-news]");
+    const reject = target.closest("[data-reject-news]");
 
-    if (rejectButton) {
-      moderateNews(rejectButton.dataset.rejectNews, "rejected");
+    if (reject) {
+      moderateNews(reject.dataset.rejectNews, "rejected");
     }
   });
 
-  /* =====================================================
-     27. OWNER PENDING NEWS
-  ===================================================== */
+  /* 20. OWNER MODERATION */
 
   async function loadPendingNews() {
-    if (!currentUser || !isOwner()) return;
-
     const container = byId("pendingNewsList");
 
-    if (!container) return;
+    if (!container || !db || !isOwner()) return;
 
-    container.innerHTML =
-      '<p class="loading-news">Wararka sugaya oggolaanshaha...</p>';
+    container.innerHTML = `<p>${escapeHTML(t("loading"))}</p>`;
 
     try {
       const { data, error } = await db
-        .from("news_submissions")
+        .from(SUBMISSIONS_TABLE)
         .select("*")
         .eq("status", "pending")
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+          ascending: false,
+        });
 
       if (error) throw error;
 
-      if (!data || data.length === 0) {
-        container.innerHTML =
-          "<p>Ma jiraan warar sugaya oggolaansho.</p>";
+      if (!data?.length) {
+        container.innerHTML = `<p>${escapeHTML(t("noPending"))}</p>`;
+
         return;
       }
 
-      container.innerHTML = data.map((item) => `
+      container.innerHTML = data
+        .map(
+          (item) => `
         <article class="submission-item">
 
           <h3>${escapeHTML(item.title)}</h3>
 
           <p>${escapeHTML(item.category || "")}</p>
 
-          <p>${escapeHTML(
-            item.summary || makeSummary(item.content)
-          )}</p>
+          <p>
+            ${escapeHTML(item.summary || summary(item.content))}
+          </p>
 
-          <small>${formatDate(item.created_at)}</small>
+          <small>
+            ${escapeHTML(dateText(item.created_at))}
+          </small>
 
           <div class="submission-actions">
 
             <button
               type="button"
-              data-approve-news="${escapeHTML(item.id)}">
+              data-approve-news="${escapeHTML(item.id)}"
+            >
               Approve
             </button>
 
             <button
               type="button"
-              data-reject-news="${escapeHTML(item.id)}">
+              data-reject-news="${escapeHTML(item.id)}"
+            >
               Reject
             </button>
 
           </div>
-
         </article>
-      `).join("");
-
-    } catch (error) {
-      console.error("Pending news error:", error);
+      `,
+        )
+        .join("");
+    } catch (err) {
+      console.error("Pending news:", err);
 
       container.innerHTML =
-        "<p>Wararka sugaya lama soo bandhigi karin.</p>";
+        "<p>Wararka sugaya lama soo bandhigi karin. Hubi RLS policy.</p>";
     }
   }
 
-  /* =====================================================
-     28. APPROVE / REJECT NEWS
-  ===================================================== */
+  async function moderateNews(id, status) {
+    if (!db || !currentUser || !isOwner()) {
+      return alert(t("noPermission"));
+    }
 
-  async function moderateNews(newsId, status) {
-    if (!currentUser) return;
-
-    await loadProfile();
-
-    if (!isOwner()) {
-      alert("Ogolaansho ma lihid.");
+    if (!["approved", "rejected"].includes(status)) {
       return;
     }
 
-    if (!["approved", "rejected"].includes(status)) return;
+    const confirmed = confirm(
+      status === "approved"
+        ? "Ma oggolaanaysaa in warkan la daabaco?"
+        : "Ma diidaysaa warkan?",
+    );
 
-    const question = status === "approved"
-      ? "Ma oggolaanaysaa in warkan la daabaco?"
-      : "Ma diidaysaa warkan?";
-
-    if (!confirm(question)) return;
+    if (!confirmed) return;
 
     try {
-      const { error } = await db
-        .from("news_submissions")
-        .update({ status })
-        .eq("id", newsId)
-        .eq("status", "pending");
+      const { data, error } = await db
+        .from(SUBMISSIONS_TABLE)
+        .select("*")
+        .eq("id", id)
+        .eq("status", "pending")
+        .maybeSingle();
 
       if (error) throw error;
+
+      if (!data) {
+        throw new Error("Warkan lama helin ama hore ayaa loo maareeyay.");
+      }
+
+      if (status === "approved") {
+        const { error: insertError } = await db.from(NEWS_TABLE).insert({
+          title: data.title,
+          category: data.category,
+          location: data.location,
+          summary: data.summary || summary(data.content),
+          content: data.content,
+          image_url: data.image_url,
+          source_url: data.source_url,
+          author_id: data.user_id,
+          status: "approved",
+        });
+
+        if (insertError) throw insertError;
+      }
+
+      const { error: updateError } = await db
+        .from(SUBMISSIONS_TABLE)
+        .update({ status })
+        .eq("id", id)
+        .eq("status", "pending");
+
+      if (updateError) throw updateError;
+
+      await loadPendingNews();
+      await loadPublishedNews();
+      await loadMySubmissions();
 
       alert(
         status === "approved"
-          ? "Warka waa la oggolaaday."
-          : "Warka waa la diiday."
+          ? "Warka waa la daabacay."
+          : "Warka waa la diiday.",
       );
+    } catch (err) {
+      console.error("Moderation:", err);
 
-      await loadPendingNews();
-      await loadPublishedNews();
-      await loadMySubmissions();
-
-    } catch (error) {
-      console.error("Moderation error:", error);
-      alert("Hawsha way fashilantay: " + error.message);
+      alert("Hawsha way fashilantay: " + err.message);
     }
   }
 
-  /* =====================================================
-     29. DELETE NEWS
-  ===================================================== */
+  /* 21. DELETE NEWS */
 
-  async function deleteNews(newsId) {
-    if (!currentUser) return;
+  async function deleteNews(id) {
+    if (!db || !isOwner()) {
+      return alert(t("noPermission"));
+    }
 
-    await loadProfile();
-
-    if (!isOwner()) {
-      alert("Kaliya Owner ayaa tirtiri kara wararka.");
+    if (!confirm("Ma hubtaa inaad tirtirayso warkan?")) {
       return;
     }
 
-    if (!confirm("Ma hubtaa inaad tirtirayso warkan?")) return;
-
     try {
-      const { error } = await db
-        .from("news_submissions")
-        .delete()
-        .eq("id", newsId);
+      const { error } = await db.from(NEWS_TABLE).delete().eq("id", id);
 
       if (error) throw error;
 
-      alert("Warka waa la tirtiray.");
-
       await loadPublishedNews();
-      await loadPendingNews();
-      await loadMySubmissions();
+    } catch (err) {
+      console.error("Delete news:", err);
 
-    } catch (error) {
-      console.error("Delete news error:", error);
-      alert("Warka lama tirtiri karin: " + error.message);
+      alert("Warka lama tirtiri karin: " + err.message);
     }
   }
 
-  /* =====================================================
-     30. LOAD MY SUBMISSIONS
-  ===================================================== */
+  /* 22. MEMBER SUBMISSIONS */
 
   async function loadMySubmissions() {
-    if (!currentUser) return;
+    if (!db || !currentUser) return;
 
     const containers = [
       byId("mySubmissionsList"),
-      byId("memberNewsList")
+      byId("memberNewsList"),
     ].filter(Boolean);
 
     if (!containers.length) return;
 
     try {
       const { data, error } = await db
-        .from("news_submissions")
+        .from(SUBMISSIONS_TABLE)
         .select("*")
         .eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+          ascending: false,
+        });
 
       if (error) throw error;
 
-      let html = "";
+      const html = data?.length
+        ? data
+            .map(
+              (item) => `
+            <article class="submission-item">
 
-      if (!data || data.length === 0) {
-        html = "<p>Weli ma aadan soo gudbin wax war ah.</p>";
-      } else {
-        html = data.map((item) => `
-          <article class="submission-item">
+              <h4>${escapeHTML(item.title)}</h4>
 
-            <h4>${escapeHTML(item.title)}</h4>
+              <p>${escapeHTML(item.category || "")}</p>
 
-            <p>${escapeHTML(item.category || "")}</p>
+              <span class="submission-status status-${escapeHTML(item.status)}">
+                ${escapeHTML(t(item.status) || item.status)}
+              </span>
 
-            <span class="submission-status status-${escapeHTML(item.status)}">
-              ${escapeHTML(item.status)}
-            </span>
+              <small>
+                ${escapeHTML(dateText(item.created_at))}
+              </small>
 
-            <small>${formatDate(item.created_at)}</small>
-
-          </article>
-        `).join("");
-      }
+            </article>
+          `,
+            )
+            .join("")
+        : "<p>Weli ma aadan soo gudbin wax war ah.</p>";
 
       containers.forEach((container) => {
         container.innerHTML = html;
       });
-
-    } catch (error) {
-      console.error("My submissions error:", error);
+    } catch (err) {
+      console.error("My submissions:", err);
 
       containers.forEach((container) => {
         container.innerHTML = "<p>Wararkaaga lama soo gelin karin.</p>";
@@ -1861,157 +1812,224 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* =====================================================
-     31. DASHBOARD TABS
-  ===================================================== */
-
-  const dashboardTabMap = {
-    publishedNews: "publishedNewsPanel",
-    profile: "memberProfilePanel"
-  };
-
-  function activateDashboardTab(tab, panel) {
-    $$(".dashboard-tab").forEach((item) => {
-      item.classList.remove("active");
-    });
-
-    $$(".dashboard-panel").forEach((item) => {
-      item.classList.remove("active");
-      item.hidden = true;
-    });
-
-    tab.classList.add("active");
-
-    if (panel) {
-      panel.hidden = false;
-      panel.classList.add("active");
-    }
-  }
-
-  $$(".dashboard-tab").forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const targetName = tab.dataset.dashboardTab;
-      const panelId = dashboardTabMap[targetName] || targetName;
-      const panel = byId(panelId);
-
-      if (panel) activateDashboardTab(tab, panel);
-    });
-  });
+  /* 23. DASHBOARD TABS */
 
   $$("[data-dashboard-tab]").forEach((tab) => {
-    if (tab.classList.contains("dashboard-tab")) return;
-
     tab.addEventListener("click", () => {
-      const panel = byId(tab.dataset.dashboardTab);
+      const raw = tab.dataset.dashboardTab;
+
+      const panel =
+        byId(raw) ||
+        byId(
+          {
+            publishedNews: "publishedNewsPanel",
+            profile: "memberProfilePanel",
+          }[raw] || "",
+        );
 
       if (!panel) return;
 
       $$("[data-dashboard-tab]").forEach((item) => {
-        item.classList.remove("active");
+        item.classList.toggle("active", item === tab);
       });
 
-      $$("[data-dashboard-panel]").forEach((item) => {
-        item.hidden = true;
+      $$("[data-dashboard-panel], .dashboard-panel").forEach((item) => {
+        item.hidden = item !== panel;
+        item.classList.toggle("active", item === panel);
       });
 
-      tab.classList.add("active");
-      panel.hidden = false;
+      $$(".dashboard-tab").forEach((item) => {
+        item.classList.toggle("active", item === tab);
+      });
     });
   });
 
-  /* =====================================================
-     32. NEWSLETTER
-  ===================================================== */
+  /* 24. NEWSLETTER */
 
-  const newsletterForm = byId("newsletterForm");
 
-  newsletterForm?.addEventListener("submit", async (event) => {
+/* =====================================================
+   24. HAFID NOR MEDIA — NEWSLETTER
+   Email Validation | Duplicate Detection | Auto Clear
+===================================================== */
+
+const newsletterForm = byId("newsletterForm");
+const newsletterEmail = byId("newsletterEmail");
+const newsletterMessage = byId("newsletterMessage");
+const newsletterSubmit = byId("newsletterSubmit");
+
+if (
+  newsletterForm &&
+  newsletterEmail &&
+  newsletterMessage &&
+  newsletterSubmit
+) {
+  newsletterForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const email = getValue("newsletterEmail");
+    const email = String(newsletterEmail.value || "")
+      .trim()
+      .toLowerCase();
 
-    const message =
-      byId("newsletterMessage") ||
-      $(".form-message", newsletterForm);
+    // Nadiifi fariintii hore
+    clearMessage(newsletterMessage);
 
-    const button = $('button[type="submit"]', newsletterForm);
-
-    clearMessage(message);
-
+    // 1. Hubi email madhan
     if (!email) {
-      showMessage(message, "Fadlan geli email-kaaga.", "error");
+      message(newsletterMessage, t("emailRequired"), "error");
+      newsletterEmail.focus();
       return;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showMessage(message, "Fadlan geli email sax ah.", "error");
+    // 2. Hubi email sax ah
+    if (!validEmail(email) || email.length > 254) {
+      message(newsletterMessage, t("invalidEmail"), "error");
+      newsletterEmail.focus();
       return;
     }
 
-    setLoading(button, true, "Isdiiwaangeli");
+    // 3. Hubi Supabase
+    if (!db) {
+      message(
+        newsletterMessage,
+        "Adeegga isdiiwaangelintu hadda ma shaqaynayo.",
+        "error"
+      );
+      return;
+    }
+
+    // 4. Jooji button-ka inta la dirayo
+    setLoading(newsletterSubmit, true, t("subscribe"));
 
     try {
+      // 5. Ku kaydi email-ka Supabase
       const { error } = await db
-        .from("newsletter_subscribers")
-        .insert({ email });
+        .from(NEWSLETTER_TABLE)
+        .insert([{ email }]);
 
+      // 6. Hubi khaladaadka
       if (error) {
-        if (error.code === "23505") {
-          throw new Error("Email-kan hore ayaa loo diiwaangeliyey.");
+        console.error("Newsletter error:", error);
+
+        // Email hore loo diiwaangeliyey
+        if (
+          error.code === "23505" ||
+          error.message?.toLowerCase().includes("duplicate")
+        ) {
+          message(
+            newsletterMessage,
+            t("duplicateEmail"),
+            "error"
+          );
+
+          // Nadiifi email-ka
+          newsletterEmail.value = "";
+          newsletterForm.reset();
+
+          return;
         }
 
-        throw error;
+        // Khalad kale
+        message(
+          newsletterMessage,
+          t("subscribeError"),
+          "error"
+        );
+
+        return;
       }
 
-      showMessage(
-        message,
-        "Waad ku mahadsan tahay isdiiwaangelintaada!",
+      // 7. Fariinta guusha
+      message(
+        newsletterMessage,
+        t("subscribed"),
         "success"
       );
 
+      // 8. Nadiifi email-ka
+      newsletterEmail.value = "";
+
+      // 9. Dib u nadiifi form-ka
       newsletterForm.reset();
 
     } catch (error) {
       console.error("Newsletter error:", error);
 
-      showMessage(
-        message,
-        error.message || "Isdiiwaangelintu way fashilantay.",
+      message(
+        newsletterMessage,
+        "Cilad ayaa dhacday. Hubi internet-kaaga.",
         "error"
       );
 
     } finally {
-      setLoading(button, false, "Isdiiwaangeli");
+      // 10. Dib u hawlgeli button-ka
+      setLoading(
+        newsletterSubmit,
+        false,
+        t("subscribe")
+      );
     }
   });
+}
 
-  /* =====================================================
-     33. BACK TO TOP
-  ===================================================== */
+  /* 25. BACK TO TOP */
 
   const backToTop = byId("backToTop");
 
-  window.addEventListener("scroll", () => {
-    if (!backToTop) return;
+  function updateBackToTop() {
+    if (backToTop) {
+      const show = window.scrollY > 350;
 
-    const visible = window.scrollY > 400;
+      backToTop.classList.toggle("show", show);
+      backToTop.classList.toggle("active", show);
+    }
+  }
 
-    backToTop.classList.toggle("show", visible);
-    backToTop.classList.toggle("active", visible);
-  });
+  window.addEventListener("scroll", updateBackToTop, { passive: true });
+
+  updateBackToTop();
 
   backToTop?.addEventListener("click", () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: "smooth",
     });
   });
 
-  /* =====================================================
-     34. AUTH SESSION INITIALIZATION
-  ===================================================== */
+  /* 26. LOGOUT */
+
+  byId("logoutBtn")?.addEventListener("click", async () => {
+    if (!db) return;
+
+    try {
+      const { error } = await db.auth.signOut();
+
+      if (error) throw error;
+
+      currentUser = null;
+      currentProfile = null;
+
+      showDashboard(false);
+      closeAuth();
+
+      await loadPublishedNews();
+
+      setText("accountBtnText", t("account"));
+    } catch (err) {
+      console.error("Logout:", err);
+
+      alert("Ka bixitaanku wuu fashilmay: " + err.message);
+    }
+  });
+
+  /* 27. SESSION INITIALIZATION */
 
   async function initializeAuth() {
+    if (!db) {
+      showDashboard(false);
+      authReady = true;
+      return;
+    }
+
     try {
       const { data, error } = await db.auth.getSession();
 
@@ -2021,75 +2039,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (currentUser) {
         await loadProfile();
-      } else {
-        currentProfile = null;
       }
 
       await updateDashboard();
-
-      authInitialized = true;
-
-    } catch (error) {
-      console.error("Session initialization error:", error);
+    } catch (err) {
+      console.error("Session initialization:", err);
 
       currentUser = null;
       currentProfile = null;
 
-      setDashboardVisible(false);
-
-      authInitialized = true;
+      showDashboard(false);
+    } finally {
+      authReady = true;
     }
   }
 
-  /* =====================================================
-     35. AUTH STATE CHANGES
-  ===================================================== */
+  /* 28. AUTH STATE CHANGES */
 
-  db.auth.onAuthStateChange((event, session) => {
-    currentUser = session?.user || null;
+  if (db) {
+    db.auth.onAuthStateChange((event, session) => {
+      currentUser = session?.user || null;
 
-    if (event === "SIGNED_OUT") {
-      currentProfile = null;
-      setDashboardVisible(false);
-      return;
-    }
+      if (event === "SIGNED_OUT") {
+        currentProfile = null;
 
-    if (
-      event === "SIGNED_IN" ||
-      event === "TOKEN_REFRESHED" ||
-      event === "USER_UPDATED"
-    ) {
-      if (!authInitialized) return;
+        showDashboard(false);
 
-      setTimeout(async () => {
-        await loadProfile();
-        await updateDashboard();
-        await loadPublishedNews();
-      }, 0);
-    }
-  });
+        setText("accountBtnText", t("account"));
 
-  /* =====================================================
-     36. INITIALIZE WEBSITE
-  ===================================================== */
+        return;
+      }
+
+      if (!authReady) return;
+
+      authEventQueue = authEventQueue
+        .then(async () => {
+          await loadProfile();
+          await updateDashboard();
+          await loadPublishedNews();
+        })
+        .catch((err) => {
+          console.error("Auth state update:", err);
+        });
+    });
+  }
+
+  /* 29. START WEBSITE */
 
   async function initializeWebsite() {
-    try {
-      await initializeAuth();
-      await loadPublishedNews();
+    updateDate();
 
-      console.log(
-        "HAFID NOR MEDIA loaded successfully."
-      );
+    await initializeAuth();
 
-    } catch (error) {
-      console.error(
-        "Website initialization error:",
-        error
-      );
-    }
+    await loadPublishedNews();
+
+    console.log("HAFID NOR MEDIA JavaScript initialized.");
   }
 
   initializeWebsite();
-
 });
